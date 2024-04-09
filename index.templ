@@ -1,0 +1,125 @@
+package main 
+
+import (
+	"strconv"
+	"fmt"
+	"time"
+)
+
+templ index(listings []Listing) {
+	<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+	<html>
+		<head></head>
+		<body>
+			<form id="search" action="/">
+				<h1>Hus.ax</h1>
+				<label for="agency">Agency</label>
+				<select id="agency" name="agency">
+					<option value="">All</option>
+					<option>Mäklarhuset</option>
+					<option>Lyyski</option>
+					<option>Aktia LKV</option>
+					<option>Din Fastighet</option>
+				</select>
+				<label for="price_min">Price min</label>
+				<input id="price_min" name="price_min" type="number"/>
+				<label for="price_min">Price max</label>
+				<input id="price_max" name="price_max" type="text"/>
+				<label for="include_deleted">Include deleted</label>
+				<input id="include_deleted" name="include_deleted" type="checkbox" value="true"/>
+				<button type="submit">Search</button>
+			</form>
+			<div id="result"></div>
+			<table style="width: 100%;white-space: nowrap;">
+				<thead>
+					<tr>
+						<th>Address</th>
+						<th>Price</th>
+						<th>Size</th>
+						<th>Rooms</th>
+						<th>Year</th>
+						<th>Price / m2</th>
+						<th>First seen</th>
+						<th>Agency</th>
+						<th>Url</th>
+					</tr>
+				</thead>
+				<tbody style="font-size: 12px;">
+					for _, x := range listings {
+						<tr>
+							<td>{ x.address }</td>
+							<td>{ formatInt(x.price) }</td>
+							<td>{ formatFloat(x.size.value) } { x.size.unit }</td>
+							<td>{ formatInt(x.rooms) }</td>
+							<td>{ formatInt(x.year) }</td>
+							<td>{ pricePerSquareMeter(x.price, x.size) } </td>
+							<td>{ formatDate(x.firstSeen) }</td>
+							<td>{ x.agency }</td>
+							<td><a href={ templ.URL(x.url) }>{ x.url }</a></td>
+						</tr>
+					}
+				</tbody>
+			</table>
+		</body>
+	</html>
+	<script>
+        const agencyName = "agency"
+        const priceMinName = "price_min";
+        const priceMaxName = "price_max";
+        const includeDeletedName = "include_deleted";
+
+        const query = window.location.search;
+        const params = new URLSearchParams(query);
+
+        const agency = params.get(agencyName) ?? '';
+        const priceMin = params.get(priceMinName);
+        const priceMax = params.get(priceMaxName);
+        const includeDeleted = params.get(includeDeletedName);
+
+        document.getElementById(agencyName).value = agency;
+        document.getElementById(priceMinName).value = priceMin;
+        document.getElementById(priceMaxName).value = priceMax;
+        document.getElementById(includeDeletedName).checked = includeDeleted === "true";
+
+        window.addEventListener('load', function() {
+          let form = document.getElementById('search');
+            form.addEventListener('formdata', function(event) {
+              let formData = event.formData;
+              for (let [name, value] of Array.from(formData.entries())) {
+                if (value === '') formData.delete(name);
+              }
+            });
+        });
+    </script>
+}
+
+func formatInt(value int) string {
+	if value < 0 {
+		return ""
+	}
+	return strconv.Itoa(value)
+}
+
+func formatFloat(value float32) string {
+	if value < 0 {
+		return ""
+	}
+	return fmt.Sprintf("%.0f", value)
+}
+func formatDate(value string) string {
+	t, err := time.Parse("2006-01-02 15:04:05.999999", value)
+	if err != nil {
+		panic(err.Error())
+	}
+	formatted := t.Format("1 Jan 2006")
+	return formatted
+}
+
+func pricePerSquareMeter(price int, size Size) string {
+	if size.unit != "m2" || size.value < 0 || price < 0 {
+		return ""
+	}
+
+	result := float32(price) / size.value
+	return formatFloat(result)
+}

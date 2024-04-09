@@ -1,0 +1,14 @@
+<script src=\"https://unpkg.com/htmx.org@1.9.12\"></script><html><head></head><body><form id=\"search\" action=\"/\"><h1>Hus.ax</h1><label for=\"agency\">Agency</label> <select id=\"agency\" name=\"agency\"><option value=\"\">All</option> <option>Mäklarhuset</option> <option>Lyyski</option> <option>Aktia LKV</option> <option>Din Fastighet</option></select> <label for=\"price_min\">Price min</label> <input id=\"price_min\" name=\"price_min\" type=\"number\"> <label for=\"price_min\">Price max</label> <input id=\"price_max\" name=\"price_max\" type=\"text\"> <label for=\"include_deleted\">Include deleted</label> <input id=\"include_deleted\" name=\"include_deleted\" type=\"checkbox\" value=\"true\"> <button type=\"submit\">Search</button></form><div id=\"result\"></div><table style=\"width: 100%;white-space: nowrap;\"><thead><tr><th>Address</th><th>Price</th><th>Size</th><th>Rooms</th><th>Year</th><th>Price / m2</th><th>First seen</th><th>Agency</th><th>Url</th></tr></thead> <tbody style=\"font-size: 12px;\">
+<tr><td>
+</td><td>
+</td><td>
+ 
+</td><td>
+</td><td>
+</td><td>
+</td><td>
+</td><td>
+</td><td><a href=\"
+\">
+</a></td></tr>
+</tbody></table></body></html><script>\n        const agencyName = \"agency\"\n        const priceMinName = \"price_min\";\n        const priceMaxName = \"price_max\";\n        const includeDeletedName = \"include_deleted\";\n\n        const query = window.location.search;\n        const params = new URLSearchParams(query);\n\n        const agency = params.get(agencyName) ?? '';\n        const priceMin = params.get(priceMinName);\n        const priceMax = params.get(priceMaxName);\n        const includeDeleted = params.get(includeDeletedName);\n\n        document.getElementById(agencyName).value = agency;\n        document.getElementById(priceMinName).value = priceMin;\n        document.getElementById(priceMaxName).value = priceMax;\n        document.getElementById(includeDeletedName).checked = includeDeleted === \"true\";\n\n        window.addEventListener('load', function() {\n          let form = document.getElementById('search');\n            form.addEventListener('formdata', function(event) {\n              let formData = event.formData;\n              for (let [name, value] of Array.from(formData.entries())) {\n                if (value === '') formData.delete(name);\n              }\n            });\n        });\n    </script>
