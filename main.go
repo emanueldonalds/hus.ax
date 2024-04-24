@@ -38,6 +38,8 @@ func GetListings(r *http.Request) []Listing {
 	qYearMax := r.URL.Query().Get("year_max")
 	qSizeMin := r.URL.Query().Get("size_min")
 	qSizeMax := r.URL.Query().Get("size_max")
+	qPriceOverAreaMin := r.URL.Query().Get("price_over_area_min")
+	qPriceOverAreaMax := r.URL.Query().Get("price_over_area_max")
 	qRoomsMin := r.URL.Query().Get("rooms_min")
 	qRoomsMax := r.URL.Query().Get("rooms_max")
 	qFirstSeenMin := r.URL.Query().Get("first_seen_min")
@@ -50,20 +52,25 @@ func GetListings(r *http.Request) []Listing {
 	query, err := db.Query(
 		"SELECT "+
 			"IFNULL(address, \"\"), "+
-			"IFNULL(price, -1), "+
+			"IFNULL(listing.price, -1), "+
 			"IFNULL(year, -1), "+
-			"IFNULL(size_value, -1), "+
+			"FLOOR(IFNULL(size_value, -1)), "+
 			"IFNULL(size_name, \"\"),"+
+            "IFNULL(FLOOR(listing.price/size_value), -1) as price_over_area, "+
 			"IFNULL(rooms, -1), "+
 			"IFNULL(first_seen, \"\"), "+
-			"IFNULL(last_seen, \"\"), "+
+			"IFNULL(listing.last_seen, \"\"), "+
 			"agency, "+
-			"url "+
+			"url, "+
+            "IFNULL(price_change.price, -1), "+
+            "IFNULL(price_change.last_seen, \"\") "+
 			"FROM listing "+
+            //"LEFT JOIN (SELECT price_change.price, price_change.last_seen FROM price_change ORDER BY price_change.last_seen DESC LIMIT 1)"+
+			"LEFT JOIN price_change on price_change.listing_id = listing.id "+
 			"WHERE deleted = ? "+
 			"AND agency = COALESCE(NULLIF(?, ''), agency) "+
-			"AND (price IS NULL OR price >= COALESCE(NULLIF(?, ''), price)) "+
-			"AND (price IS NULL OR price <= COALESCE(NULLIF(?, ''), price)) "+
+			"AND (listing.price IS NULL OR listing.price >= COALESCE(NULLIF(?, ''), listing.price)) "+
+			"AND (listing.price IS NULL OR listing.price <= COALESCE(NULLIF(?, ''), listing.price)) "+
 			"AND (year IS NULL OR year >= COALESCE(NULLIF(?, ''), year)) "+
 			"AND (year IS NULL OR year <= COALESCE(NULLIF(?, ''), year)) "+
 			"AND (size_value IS NULL OR size_value >= COALESCE(NULLIF(?, ''), size_value)) "+
@@ -71,7 +78,9 @@ func GetListings(r *http.Request) []Listing {
 			"AND (rooms IS NULL OR rooms >= COALESCE(NULLIF(?, ''), rooms)) "+
 			"AND (rooms IS NULL OR rooms <= COALESCE(NULLIF(?, ''), rooms)) "+
 			"AND first_seen >= COALESCE(NULLIF(?, ''), first_seen) "+
-			"AND last_seen <= COALESCE(NULLIF(?, ''), last_seen ) "+
+			"AND listing.last_seen <= COALESCE(NULLIF(?, ''), listing.last_seen ) "+
+			"HAVING (price_over_area IS NULL OR price_over_area >= COALESCE(NULLIF(?, ''), price_over_area)) "+
+			"AND (price_over_area IS NULL OR price_over_area <= COALESCE(NULLIF(?, ''), price_over_area)) "+
 			ResolveOrder(qOrderBy, qSortOrder),
 		ResolveDeleted(qIncludeDeleted),
 		agency,
@@ -85,32 +94,39 @@ func GetListings(r *http.Request) []Listing {
 		qRoomsMax,
 		qFirstSeenMin,
 		qLastSeen,
+		qPriceOverAreaMin,
+		qPriceOverAreaMax,
 	)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
+	//var priceChanges  = make(map[int][]PriceChange)
 	listings := []Listing{}
 
 	for query.Next() {
-		var listing Listing
+		var rowListing Listing
+        var rowPriceChange PriceChange
 		err := query.Scan(
-			&listing.address,
-			&listing.price,
-			&listing.year,
-			&listing.size.value,
-			&listing.size.unit,
-			&listing.rooms,
-			&listing.firstSeen,
-			&listing.lastSeen,
-			&listing.agency,
-			&listing.url)
+			&rowListing.address,
+			&rowListing.price,
+			&rowListing.year,
+			&rowListing.size.value,
+			&rowListing.size.unit,
+            &rowListing.priceOverArea,
+			&rowListing.rooms,
+			&rowListing.firstSeen,
+			&rowListing.lastSeen,
+			&rowListing.agency,
+			&rowListing.url,
+            &rowPriceChange.price,
+            &rowPriceChange.lastSeen)
 		if err != nil {
 			panic(err.Error())
 		}
 
-		listings = append(listings, listing)
+		listings = append(listings, rowListing)
 	}
 	return listings
 }
@@ -141,6 +157,7 @@ func ResolveOrder(qOrderBy string, qSortOrder string) string {
 			"price",
 			"url",
 			"size_value",
+			"price_over_area",
 			"rooms",
 			"year",
 			"first_seen",

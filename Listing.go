@@ -6,6 +6,7 @@ type Listing struct {
     price int
     url string
     size Size
+    priceOverArea int
     rooms int
     year int
     priceHistory []PriceChange
@@ -14,7 +15,7 @@ type Listing struct {
 }
 
 type Size struct {
-    value float32
+    value int
     unit string
 }
 

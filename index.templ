@@ -24,15 +24,19 @@ templ index(listings []Listing) {
         margin-bottom: 10px;
       }
 
-      .sorting {
+      .sortable {
         color: inherit;
         text-decoration: none;
       }
-      .sorting:visited {
+      .sortable:visited {
         color: inherit;
       }
-      .sorting:hover {
+      .sortable:hover {
         color: gray;
+      }
+
+      .tableHeader {
+        justify-content: top;
       }
     </style>
 	<html>
@@ -73,28 +77,30 @@ templ index(listings []Listing) {
 			<div id="result"></div>
 			<table style="width: 100%;white-space: nowrap;">
 				<thead>
-					<tr>
-						<th><a class="sorting" href="#" onclick="sort('address')">Address</a></th>
-						<th><a class="sorting" href="#" onclick="sort('price')">Price</a></th>
-						<th><a class="sorting" href="#" onclick="sort('size_value')">Area</a></th>
-						<th><a class="sorting" href="#" onclick="sort('rooms')">Rooms</a></th>
-						<th><a class="sorting" href="#" onclick="sort('year')">Year</a></th>
-						<th>Price/Area</th>
-						<th><a class="sorting" href="#" onclick="sort('first_seen')">First seen</a></th>
-						<th><a class="sorting" href="#" onclick="sort('agency')">Agency</a></th>
-						<th><a class="sorting" href="#" onclick="sort('url')">Url</a></th>
+					<tr class="tableHeader">
+						<th><a class="sortable" href="#" onclick="sort('address')">Address</a></th>
+						<th><a class="sortable" href="#" onclick="sort('price')">Price</a></th>
+						<th><a class="sortable" href="#" onclick="sort('size_value')">Area</a></th>
+						<th><a class="sortable" href="#" onclick="sort('price_over_area')">Price/m2</a></th>
+						<th><a class="sortable" href="#" onclick="sort('rooms')">Rooms</a></th>
+						<th><a class="sortable" href="#" onclick="sort('year')">Year</a></th>
+						<th><a class="sortable" href="#" onclick="sort('first_seen')">First seen</a></th>
+						<th>Previous price</th>
+						<th><a class="sortable" href="#" onclick="sort('agency')">Agency</a></th>
+						<th><a class="sortable" href="#" onclick="sort('url')">Url</a></th>
 					</tr>
 				</thead>
 				<tbody style="font-size: 12px;">
 					for _, x := range listings {
 						<tr>
 							<td>{ x.address }</td>
-							<td>{ formatInt(x.price) }</td>
-							<td>{ formatFloat(x.size.value) } { x.size.unit }</td>
+							<td>{ formatPrice(x.price) }</td>
+							<td>{ formatInt(x.size.value) } { x.size.unit }</td>
+							<td>{ formatPrice(x.priceOverArea) } </td>
 							<td>{ formatInt(x.rooms) }</td>
 							<td>{ formatInt(x.year) }</td>
-							<td>{ pricePerSquareMeter(x.price, x.size) } </td>
 							<td>{ formatDate(x.firstSeen) }</td>
+							<td>{ formatPrevPrice(x.priceHistory) }</td>
 							<td>{ x.agency }</td>
 							<td><a href={ templ.URL(x.url) }>{ x.url }</a></td>
 						</tr>
@@ -142,12 +148,11 @@ templ index(listings []Listing) {
         document.getElementById(yearMaxName).value = yearMax;
         document.getElementById(areaMinName).value = areaMin;
         document.getElementById(areaMaxName).value = areaMax;
-        document.getElementById(priceOverAreaMinName).value = price_over_area_min;
-        document.getElementById(priceOverAreaMaxName).value = price_over_area_max;
+        document.getElementById(priceOverAreaMinName).value = priceOverAreaMin;
+        document.getElementById(priceOverAreaMaxName).value = priceOverAreaMax;
         document.getElementById(includeDeletedName).checked = includeDeleted === "true";
         document.getElementById(orderByName).value = orderBy;
         document.getElementById(sortOrderName).value = sortOrder;
-
 
         // Interactive stuff
 
@@ -181,6 +186,13 @@ templ index(listings []Listing) {
     </script>
 }
 
+func formatPrice(value int) string {
+	if value < 0 {
+		return ""
+	}
+	return formatInt(value) + " €"
+}
+
 func formatInt(value int) string {
 	if value < 0 {
 		return ""
@@ -194,6 +206,7 @@ func formatFloat(value float32) string {
 	}
 	return fmt.Sprintf("%.0f", value)
 }
+
 func formatDate(value string) string {
 	t, err := time.Parse("2006-01-02 15:04:05.999999", value)
 	if err != nil {
@@ -203,11 +216,10 @@ func formatDate(value string) string {
 	return formatted
 }
 
-func pricePerSquareMeter(price int, size Size) string {
-	if size.unit != "m2" || size.value < 0 || price < 0 {
+func formatPrevPrice(priceHistory []PriceChange) string {
+	if len(priceHistory) == 0 {
 		return ""
 	}
-
-	result := float32(price) / size.value
-	return formatFloat(result)
+	var lastPrice = priceHistory[0]
+	return fmt.Sprintf("%s %s", lastPrice.price, formatDate(lastPrice.lastSeen))
 }
