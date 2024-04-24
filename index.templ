@@ -8,6 +8,33 @@ import (
 
 templ index(listings []Listing) {
 	<script src="https://unpkg.com/htmx.org@1.9.12"></script>
+	<style>
+        body {
+          display: flex;
+          max-width: 2vw;
+        }
+
+      #search {
+        display: flex;
+        flex-direction: column;
+        margin-right: 20px;
+      }
+
+      input, select {
+        margin-bottom: 10px;
+      }
+
+      .sorting {
+        color: inherit;
+        text-decoration: none;
+      }
+      .sorting:visited {
+        color: inherit;
+      }
+      .sorting:hover {
+        color: gray;
+      }
+    </style>
 	<html>
 		<head></head>
 		<body>
@@ -24,24 +51,38 @@ templ index(listings []Listing) {
 				<label for="price_min">Price min</label>
 				<input id="price_min" name="price_min" type="number"/>
 				<label for="price_min">Price max</label>
-				<input id="price_max" name="price_max" type="text"/>
+				<input id="price_max" name="price_max" type="number"/>
+				<label for="year_min">Year min</label>
+				<input id="year_min" name="year_min" type="number"/>
+				<label for="year_max">Year max</label>
+				<input id="year_max" name="year_max" type="number"/>
+				<label for="size_value_min">Area min</label>
+				<input id="size_value_min" name="size_value_min" type="number"/>
+				<label for="size_value_max">Area max</label>
+				<input id="size_value_max" name="size_value_max" type="number"/>
+				<label for="price_over_area_min">Price/Area min</label>
+				<input id="price_over_area_min" name="price_over_area_min" type="number"/>
+				<label for="price_over_area_max">Price/Area max</label>
+				<input id="price_over_area_max" name="price_over_area_max" type="number"/>
 				<label for="include_deleted">Include deleted</label>
 				<input id="include_deleted" name="include_deleted" type="checkbox" value="true"/>
+				<input type="hidden" id="order_by" name="order_by"/>
+				<input type="hidden" id="sort_order" name="sort_order"/>
 				<button type="submit">Search</button>
 			</form>
 			<div id="result"></div>
 			<table style="width: 100%;white-space: nowrap;">
 				<thead>
 					<tr>
-						<th>Address</th>
-						<th>Price</th>
-						<th>Size</th>
-						<th>Rooms</th>
-						<th>Year</th>
-						<th>Price / m2</th>
-						<th>First seen</th>
-						<th>Agency</th>
-						<th>Url</th>
+						<th><a class="sorting" href="#" onclick="sort('address')">Address</a></th>
+						<th><a class="sorting" href="#" onclick="sort('price')">Price</a></th>
+						<th><a class="sorting" href="#" onclick="sort('size_value')">Area</a></th>
+						<th><a class="sorting" href="#" onclick="sort('rooms')">Rooms</a></th>
+						<th><a class="sorting" href="#" onclick="sort('year')">Year</a></th>
+						<th>Price/Area</th>
+						<th><a class="sorting" href="#" onclick="sort('first_seen')">First seen</a></th>
+						<th><a class="sorting" href="#" onclick="sort('agency')">Agency</a></th>
+						<th><a class="sorting" href="#" onclick="sort('url')">Url</a></th>
 					</tr>
 				</thead>
 				<tbody style="font-size: 12px;">
@@ -63,10 +104,20 @@ templ index(listings []Listing) {
 		</body>
 	</html>
 	<script>
+        // On initial load stuff
+
         const agencyName = "agency"
         const priceMinName = "price_min";
         const priceMaxName = "price_max";
+        const yearMinName = "year_min";
+        const yearMaxName = "year_max";
+        const areaMinName = "size_value_min";
+        const areaMaxName = "size_value_max";
+        const priceOverAreaMinName = "price_over_area_min";
+        const priceOverAreaMaxName = "price_over_area_max";
         const includeDeletedName = "include_deleted";
+        const orderByName = "order_by";
+        const sortOrderName = "sort_order";
 
         const query = window.location.search;
         const params = new URLSearchParams(query);
@@ -74,22 +125,59 @@ templ index(listings []Listing) {
         const agency = params.get(agencyName) ?? '';
         const priceMin = params.get(priceMinName);
         const priceMax = params.get(priceMaxName);
+        const yearMin = params.get(yearMinName);
+        const yearMax = params.get(yearMaxName);
+        const areaMin = params.get(areaMinName);
+        const areaMax = params.get(areaMaxName);
+        const priceOverAreaMin = params.get(priceOverAreaMinName);
+        const priceOverAreaMax = params.get(priceOverAreaMaxName);
         const includeDeleted = params.get(includeDeletedName);
+        const orderBy = params.get(orderByName);
+        const sortOrder = params.get(sortOrderName);
 
         document.getElementById(agencyName).value = agency;
         document.getElementById(priceMinName).value = priceMin;
         document.getElementById(priceMaxName).value = priceMax;
+        document.getElementById(yearMinName).value = yearMin;
+        document.getElementById(yearMaxName).value = yearMax;
+        document.getElementById(areaMinName).value = areaMin;
+        document.getElementById(areaMaxName).value = areaMax;
+        document.getElementById(priceOverAreaMinName).value = price_over_area_min;
+        document.getElementById(priceOverAreaMaxName).value = price_over_area_max;
         document.getElementById(includeDeletedName).checked = includeDeleted === "true";
+        document.getElementById(orderByName).value = orderBy;
+        document.getElementById(sortOrderName).value = sortOrder;
 
+
+        // Interactive stuff
+
+        let searchForm = document.getElementById('search');
+
+        // Remove all empty form fields from the GET query
         window.addEventListener('load', function() {
-          let form = document.getElementById('search');
-            form.addEventListener('formdata', function(event) {
+            searchForm.addEventListener('formdata', function(event) {
               let formData = event.formData;
               for (let [name, value] of Array.from(formData.entries())) {
                 if (value === '') formData.delete(name);
               }
             });
         });
+
+        // Add sort_by and sort_order query parameters and submit the search form
+        function sort(field) {
+            const orderByInput = document.getElementById('order_by')
+            const sortOrderInput = document.getElementById('sort_order')
+
+            orderByInput.value = field;
+
+            if (orderByInput.value === field) {
+                sortOrderInput.value = sortOrderInput.value === "desc" ? "asc" : "desc";
+            }
+            else {
+                sortOrderInput.value = "desc";
+            }
+            searchForm.submit();
+        }
     </script>
 }
 

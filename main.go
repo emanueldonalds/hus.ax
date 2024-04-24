@@ -150,7 +150,7 @@ func ResolveOrder(qOrderBy string, qSortOrder string) string {
 		panic("Invalid order by value " + qOrderBy)
 	}
 
-	if !slices.Contains([]string{"asc", "desc"}, strings.ToLower(qSortOrder)) {
+	if !slices.Contains([]string{"", "asc", "desc"}, strings.ToLower(qSortOrder)) {
 		panic("Invalid sort order " + qSortOrder)
 	}
 
