@@ -130,9 +130,9 @@ func index(listings []Listing) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var9 string
-			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(formatDate(x.firstSeen))
+			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(formatPrevPrice(x.priceHistory))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 102, Col: 36}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 102, Col: 44}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -143,9 +143,9 @@ func index(listings []Listing) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var10 string
-			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(formatPrevPrice(x.priceHistory))
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(formatDate(x.firstSeen))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 103, Col: 44}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `index.templ`, Line: 103, Col: 36}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -210,7 +210,7 @@ func formatPrice(value int) string {
 }
 
 func formatInt(value int) string {
-	if value < 0 {
+	if value <= 0 {
 		return ""
 	}
 	return strconv.Itoa(value)
@@ -224,6 +224,9 @@ func formatFloat(value float32) string {
 }
 
 func formatDate(value string) string {
+	if value == "" {
+		return ""
+	}
 	t, err := time.Parse("2006-01-02 15:04:05.999999", value)
 	if err != nil {
 		panic(err.Error())
@@ -237,5 +240,5 @@ func formatPrevPrice(priceHistory []PriceChange) string {
 		return ""
 	}
 	var lastPrice = priceHistory[0]
-	return fmt.Sprintf("%s %s", lastPrice.price, formatDate(lastPrice.lastSeen))
+	return fmt.Sprintf("%s € (%s)", formatInt(lastPrice.price), formatDate(lastPrice.lastSeen))
 }

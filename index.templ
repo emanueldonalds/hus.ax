@@ -84,8 +84,8 @@ templ index(listings []Listing) {
 						<th><a class="sortable" href="#" onclick="sort('price_over_area')">Price/m2</a></th>
 						<th><a class="sortable" href="#" onclick="sort('rooms')">Rooms</a></th>
 						<th><a class="sortable" href="#" onclick="sort('year')">Year</a></th>
-						<th><a class="sortable" href="#" onclick="sort('first_seen')">First seen</a></th>
 						<th>Previous price</th>
+						<th><a class="sortable" href="#" onclick="sort('first_seen')">First seen</a></th>
 						<th><a class="sortable" href="#" onclick="sort('agency')">Agency</a></th>
 						<th><a class="sortable" href="#" onclick="sort('url')">Url</a></th>
 					</tr>
@@ -99,8 +99,8 @@ templ index(listings []Listing) {
 							<td>{ formatPrice(x.priceOverArea) } </td>
 							<td>{ formatInt(x.rooms) }</td>
 							<td>{ formatInt(x.year) }</td>
-							<td>{ formatDate(x.firstSeen) }</td>
 							<td>{ formatPrevPrice(x.priceHistory) }</td>
+							<td>{ formatDate(x.firstSeen) }</td>
 							<td>{ x.agency }</td>
 							<td><a href={ templ.URL(x.url) }>{ x.url }</a></td>
 						</tr>
@@ -154,6 +154,7 @@ templ index(listings []Listing) {
         document.getElementById(orderByName).value = orderBy;
         document.getElementById(sortOrderName).value = sortOrder;
 
+
         // Interactive stuff
 
         let searchForm = document.getElementById('search');
@@ -194,7 +195,7 @@ func formatPrice(value int) string {
 }
 
 func formatInt(value int) string {
-	if value < 0 {
+	if value <= 0 {
 		return ""
 	}
 	return strconv.Itoa(value)
@@ -208,6 +209,9 @@ func formatFloat(value float32) string {
 }
 
 func formatDate(value string) string {
+	if value == "" {
+		return ""
+	}
 	t, err := time.Parse("2006-01-02 15:04:05.999999", value)
 	if err != nil {
 		panic(err.Error())
@@ -221,5 +225,5 @@ func formatPrevPrice(priceHistory []PriceChange) string {
 		return ""
 	}
 	var lastPrice = priceHistory[0]
-	return fmt.Sprintf("%s %s", lastPrice.price, formatDate(lastPrice.lastSeen))
+	return fmt.Sprintf("%s € (%s)", formatInt(lastPrice.price), formatDate(lastPrice.lastSeen))
 }

@@ -18,12 +18,13 @@ func main() {
 		IndexHandler(w, r)
 	})
 
-	fmt.Println("Listening on :3000")
-	log.Fatal(http.ListenAndServe(":3000", mux))
+	fmt.Println("Listening on :4932")
+	log.Fatal(http.ListenAndServe(":4932", mux))
 }
 
 func IndexHandler(w http.ResponseWriter, r *http.Request) {
-	index := index(GetListings(r))
+    li := GetListings(r);
+	index := index(li)
 	index.Render(r.Context(), w)
 }
 
@@ -51,21 +52,22 @@ func GetListings(r *http.Request) []Listing {
 
 	query, err := db.Query(
 		"SELECT "+
+			"listing.id, "+
 			"IFNULL(address, \"\"), "+
 			"IFNULL(listing.price, -1), "+
 			"IFNULL(year, -1), "+
 			"FLOOR(IFNULL(size_value, -1)), "+
 			"IFNULL(size_name, \"\"),"+
-            "IFNULL(FLOOR(listing.price/size_value), -1) as price_over_area, "+
+			"IFNULL(FLOOR(listing.price/size_value), -1) as price_over_area, "+
 			"IFNULL(rooms, -1), "+
 			"IFNULL(first_seen, \"\"), "+
 			"IFNULL(listing.last_seen, \"\"), "+
 			"agency, "+
 			"url, "+
-            "IFNULL(price_change.price, -1), "+
-            "IFNULL(price_change.last_seen, \"\") "+
+			"IFNULL(price_change.price, -1), "+
+			"IFNULL(price_change.last_seen, \"\") "+
 			"FROM listing "+
-            //"LEFT JOIN (SELECT price_change.price, price_change.last_seen FROM price_change ORDER BY price_change.last_seen DESC LIMIT 1)"+
+			//"LEFT JOIN (SELECT price_change.price, price_change.last_seen FROM price_change ORDER BY price_change.last_seen DESC LIMIT 1)"+
 			"LEFT JOIN price_change on price_change.listing_id = listing.id "+
 			"WHERE deleted = ? "+
 			"AND agency = COALESCE(NULLIF(?, ''), agency) "+
@@ -102,33 +104,79 @@ func GetListings(r *http.Request) []Listing {
 		panic(err.Error())
 	}
 
-	//var priceChanges  = make(map[int][]PriceChange)
 	listings := []Listing{}
 
 	for query.Next() {
 		var rowListing Listing
-        var rowPriceChange PriceChange
+		var rowPriceChange PriceChange
 		err := query.Scan(
+			&rowListing.id,
 			&rowListing.address,
 			&rowListing.price,
 			&rowListing.year,
 			&rowListing.size.value,
 			&rowListing.size.unit,
-            &rowListing.priceOverArea,
+			&rowListing.priceOverArea,
 			&rowListing.rooms,
 			&rowListing.firstSeen,
 			&rowListing.lastSeen,
 			&rowListing.agency,
 			&rowListing.url,
-            &rowPriceChange.price,
-            &rowPriceChange.lastSeen)
+			&rowPriceChange.price,
+			&rowPriceChange.lastSeen)
+
 		if err != nil {
 			panic(err.Error())
 		}
 
 		listings = append(listings, rowListing)
 	}
+
+    priceChanges := GetPriceChanges(db, listings)
+
+    // Add price changes to listings
+	for _, priceChange := range priceChanges {
+		for i, listing := range listings {
+			if priceChange.listingId == listing.id {
+				listings[i].priceHistory = append(listing.priceHistory, priceChange)
+			}
+		}
+	}
+
 	return listings
+}
+
+func GetPriceChanges(db *sql.DB, listings []Listing) []PriceChange {
+    if (len(listings)==0) {
+        return nil
+    }
+	listingsIds := []string{}
+
+	for _, listing := range listings {
+		listingsIds = append(listingsIds, listing.id)
+	}
+
+	joinedIds := strings.Join(listingsIds, ", ")
+
+	query, err := db.Query("SELECT price, COALESCE(last_seen, ''), listing_id FROM price_change WHERE listing_id IN (" + joinedIds + ") ORDER BY last_seen DESC")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	priceChanges := []PriceChange{}
+
+	for query.Next() {
+		var rowPriceChange PriceChange
+		err := query.Scan(&rowPriceChange.price, &rowPriceChange.lastSeen, &rowPriceChange.listingId)
+
+		if err != nil {
+			panic(err.Error())
+		}
+        priceChanges = append(priceChanges, rowPriceChange);
+	}
+
+	return priceChanges
 }
 
 func GetDb() *sql.DB {
@@ -147,7 +195,7 @@ func GetDb() *sql.DB {
 
 func ResolveOrder(qOrderBy string, qSortOrder string) string {
 	if qOrderBy == "" {
-		return ""
+		return "ORDER BY first_seen desc"
 	}
 
 	if !slices.Contains(
@@ -171,7 +219,12 @@ func ResolveOrder(qOrderBy string, qSortOrder string) string {
 		panic("Invalid sort order " + qSortOrder)
 	}
 
-	return fmt.Sprintf("ORDER BY %s %s", qOrderBy, qSortOrder)
+    orderBy := "listing." + qOrderBy
+    if (qOrderBy == "price_over_area") {
+        orderBy = qOrderBy;
+    }
+
+	return fmt.Sprintf("ORDER BY %s %s", orderBy, qSortOrder)
 }
 
 func ResolveDeleted(qIncludeDeleted string) string {

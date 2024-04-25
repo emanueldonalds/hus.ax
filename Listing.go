@@ -1,6 +1,7 @@
 package main
 
 type Listing struct {
+    id string
     agency string
     address string
     price int
@@ -22,4 +23,5 @@ type Size struct {
 type PriceChange struct {
     lastSeen string
     price int
+    listingId string
 }
