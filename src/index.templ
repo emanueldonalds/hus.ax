@@ -1,0 +1,77 @@
+package main 
+
+templ index(listings []Listing, lastScrape ScrapeEvent) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<meta charset="utf-8"/>
+			<title>Fastigheter på Åland</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<script src="/assets/htmx.min.js"></script>
+			<link href="/assets/style.css" rel="stylesheet"/>
+		</head>
+		<body>
+			<div class="container">
+				<div class="container-section" id="search">
+					<form class="search-section" id="search" hx-get="/filter" hx-target="#result">
+						<h1>Fastigheter Åland</h1>
+						@inputRange("price_min", "price_max", "Price")
+						@inputRange("year_min", "year_max", "Year")
+						@inputRange("size_value_min", "size_value_max", "Area")
+						@inputRange("price_over_area_min", "price_over_area_max", "Price/m2")
+						@inputAgency()
+						@inputIncludeDeleted()
+						<input type="hidden" id="order_by" name="order_by"/>
+						<input type="hidden" id="sort_order" name="sort_order"/>
+						<div class="spacer-v"></div>
+						<button id="send" type="submit">Search</button>
+					</form>
+					<div class="search-section" id="metadata">
+						<span>
+							Last scraped:
+							{ formatDate(lastScrape.date) }
+						</span>
+					</div>
+				</div>
+				<div class="container-section" id="result">
+					@result(listings)
+				</div>
+			</div>
+			<script src="/assets/script.js"></script>
+		</body>
+	</html>
+}
+
+templ inputRange(minId string, maxId string, title string) {
+	<div class="input-range-container range">
+		<p class="input-label">{ title }</p>
+		<div class="input-container">
+			<label class="range-label" for={ minId }>Min</label>
+			<input class="input-field" id={ minId } name={ minId } type="number"/>
+		</div>
+		<div class="input-container">
+			<label class="range-label" for={ maxId }>Max</label>
+			<input class="input-field" id={ maxId } name={ maxId } type="number"/>
+		</div>
+	</div>
+}
+
+templ inputAgency() {
+	<div class="input-container agency">
+		<label class="input-label" for="agency">Agency</label>
+		<select id="agency" name="agency">
+			<option value="">All</option>
+			<option>Mäklarhuset</option>
+			<option>Lyyski</option>
+			<option>Aktia LKV</option>
+			<option>Din Fastighet</option>
+		</select>
+	</div>
+}
+
+templ inputIncludeDeleted() {
+	<div class="input-container">
+		<label class="input-label" for="include_deleted">Include deleted</label>
+		<input class="checkbox include-deleted" id="include_deleted" name="include_deleted" type="checkbox" value="true"/>
+	</div>
+}

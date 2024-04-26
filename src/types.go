@@ -25,3 +25,12 @@ type PriceChange struct {
     price int
     listingId string
 }
+
+type ScrapeEvent struct {
+    date string
+    added int
+    updated int
+    deleted int
+    undeleted int
+    totalActive int
+}

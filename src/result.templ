@@ -1,0 +1,45 @@
+package main;
+
+import (
+	"strconv"
+)
+
+templ result(listings []Listing) {
+	<div class="result-section table-stats">
+		<p>Rows: { strconv.Itoa(len(listings)) }</p>
+	</div>
+	<div class="result-section table-wrapper">
+		<table>
+			<thead>
+				<tr>
+					<th><a class="sortable" onclick="sort('address')">Address</a></th>
+					<th><a class="sortable" onclick="sort('price')">Price</a></th>
+					<th><a class="sortable" onclick="sort('size_value')">Area</a></th>
+					<th><a class="sortable" onclick="sort('price_over_area')">Price/m2</a></th>
+					<th><a class="sortable" onclick="sort('rooms')">Rooms</a></th>
+					<th><a class="sortable" onclick="sort('year')">Year</a></th>
+					<th>Old price</th>
+					<th><a class="sortable" onclick="sort('first_seen')">First seen</a></th>
+					<th><a class="sortable" onclick="sort('agency')">Agency</a></th>
+					<th><a class="sortable" onclick="sort('url')">Url</a></th>
+				</tr>
+			</thead>
+			<tbody>
+				for _, x := range listings {
+					<tr>
+						<td class="address" title={ x.address }>{ x.address }</td>
+						<td>{ formatPrice(x.price) }</td>
+						<td>{ formatInt(x.size.value) } { x.size.unit }</td>
+						<td>{ formatPrice(x.priceOverArea) } </td>
+						<td>{ formatInt(x.rooms) }</td>
+						<td>{ formatInt(x.year) }</td>
+						<td>{ formatPrevPrice(x.priceHistory) }</td>
+						<td>{ formatDate(x.firstSeen) }</td>
+						<td>{ x.agency }</td>
+						<td class="url"><a href={ templ.URL(x.url) }>{ x.url }</a></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}

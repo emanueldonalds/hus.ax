@@ -1,0 +1,9 @@
+[Unit]
+Description=Property Viewer service 
+ 
+[Service]
+ExecStart=/home/properties/property-viewer/property-viewer
+User=properties
+
+[Install]
+WantedBy=multi-user.target
