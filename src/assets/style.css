@@ -96,7 +96,7 @@ h1 {
     display: flex;
 }
 
-#include-deleted {
+.include-deleted {
     height: 1.5em;
     width: 1.5em;
     margin-left: 1em;
