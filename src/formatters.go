@@ -7,7 +7,7 @@ import (
 )
 
 func formatPrice(value int) string {
-	if value < 0 {
+	if value <= 0 {
 		return ""
 	}
 	return formatInt(value) + " €"

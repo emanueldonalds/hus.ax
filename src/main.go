@@ -195,7 +195,7 @@ func GetPriceChanges(listings []Listing, db *sql.DB) []PriceChange {
 
 	joinedIds := strings.Join(listingsIds, ", ")
     
-	query, err := db.Query("SELECT price, COALESCE(last_seen, ''), listing_id FROM price_change WHERE listing_id IN (" + joinedIds + ") ORDER BY last_seen DESC")
+	query, err := db.Query("SELECT IFNULL(price, 0), COALESCE(last_seen, ''), listing_id FROM price_change WHERE listing_id IN (" + joinedIds + ") ORDER BY last_seen DESC")
 
 	if err != nil {
 		panic(err.Error())
