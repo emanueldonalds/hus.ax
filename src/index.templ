@@ -16,7 +16,7 @@ templ index(listings []Listing, lastScrape ScrapeEvent) {
 					<form class="search-section" id="search" hx-get="/filter" hx-target="#result">
 						<h1>Fastigheter Åland</h1>
 						@inputRange("price_min", "price_max", "Price")
-						@inputRange("year_min", "year_max", "Year")
+						@inputRange("build_year_min", "build_year_max", "Year")
 						@inputRange("size_value_min", "size_value_max", "Area")
 						@inputRange("price_over_area_min", "price_over_area_max", "Price/m2")
 						@inputAgency()

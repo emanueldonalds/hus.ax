@@ -25,7 +25,6 @@ func main() {
         panic("Can not read assets")
     }
 
-
 	db := GetDb()
 	fs := http.FileServer(http.Dir(assetsDir))
 
@@ -60,8 +59,8 @@ func GetListings(r *http.Request, db *sql.DB) []Listing {
 	agency := r.URL.Query().Get("agency")
 	qPriceMin := r.URL.Query().Get("price_min")
 	qPriceMax := r.URL.Query().Get("price_max")
-	qYearMin := r.URL.Query().Get("year_min")
-	qYearMax := r.URL.Query().Get("year_max")
+	qYearMin := r.URL.Query().Get("build_year_min")
+	qYearMax := r.URL.Query().Get("build_year_max")
 	qSizeMin := r.URL.Query().Get("size_value_min")
 	qSizeMax := r.URL.Query().Get("size_value_max")
 	qPriceOverAreaMin := r.URL.Query().Get("price_over_area_min")
@@ -82,7 +81,7 @@ func GetListings(r *http.Request, db *sql.DB) []Listing {
 			"listing.id, "+
 			"IFNULL(address, \"\"), "+
 			"IFNULL(listing.price, -1), "+
-			"IFNULL(year, -1), "+
+			"IFNULL(build_year, -1), "+
 			"FLOOR(IFNULL(size_value, -1)), "+
 			"IFNULL(size_name, \"\"),"+
 			"IFNULL(FLOOR(listing.price/size_value), -1) as price_over_area, "+
@@ -100,8 +99,8 @@ func GetListings(r *http.Request, db *sql.DB) []Listing {
 			"AND agency = COALESCE(NULLIF(?, ''), agency) "+
 			"AND (listing.price IS NULL OR listing.price >= COALESCE(NULLIF(?, ''), listing.price-1)) "+
 			"AND (listing.price IS NULL OR listing.price <= COALESCE(NULLIF(?, ''), listing.price+1)) "+
-			"AND (year IS NULL OR year >= COALESCE(NULLIF(?, ''), year-1)) "+
-			"AND (year IS NULL OR year <= COALESCE(NULLIF(?, ''), year+1)) "+
+			"AND (build_year IS NULL OR build_year >= COALESCE(NULLIF(?, ''), build_year-1)) "+
+			"AND (build_year IS NULL OR build_year <= COALESCE(NULLIF(?, ''), build_year+1)) "+
 			"AND (size_value IS NULL OR size_value >= COALESCE(NULLIF(?, ''), size_value-1)) "+
 			"AND (size_value IS NULL OR size_value <= COALESCE(NULLIF(?, ''), size_value+1)) "+
 			"AND (rooms IS NULL OR rooms >= COALESCE(NULLIF(?, ''), rooms-1)) "+
@@ -272,7 +271,7 @@ func ResolveOrder(qOrderBy string, qSortOrder string) string {
 			"size_value",
 			"price_over_area",
 			"rooms",
-			"year",
+			"build_year",
 			"first_seen",
 			"last_seen",
 		},

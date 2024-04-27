@@ -8,8 +8,8 @@ function populateInputFields() {
     const agencyName = "agency";
     const priceMinName = "price_min";
     const priceMaxName = "price_max";
-    const yearMinName = "year_min";
-    const yearMaxName = "year_max";
+    const buildYearMinName = "build_year_min";
+    const buildYearMaxName = "build_year_max";
     const areaMinName = "size_value_min";
     const areaMaxName = "size_value_max";
     const priceOverAreaMinName = "price_over_area_min";
@@ -21,8 +21,8 @@ function populateInputFields() {
     document.getElementById(agencyName).value = params.get(agencyName) ?? '';
     document.getElementById(priceMinName).value = params.get(priceMinName);
     document.getElementById(priceMaxName).value = params.get(priceMaxName);
-    document.getElementById(yearMinName).value = params.get(yearMinName);
-    document.getElementById(yearMaxName).value = params.get(yearMaxName);
+    document.getElementById(buildYearMinName).value = params.get(buildYearMinName);
+    document.getElementById(buildYearMaxName).value = params.get(buildYearMaxName);
     document.getElementById(areaMinName).value = params.get(areaMinName);
     document.getElementById(areaMaxName).value = params.get(areaMaxName);
     document.getElementById(priceOverAreaMinName).value = params.get(priceOverAreaMinName);
