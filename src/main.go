@@ -12,6 +12,10 @@ import (
 
 func main() {
 	assetsDir := os.Getenv("PROPERTY_VIEWER_ASSETS_DIR")
+    if (assetsDir == "") {
+        assetsDir = "./assets";
+    }
+
 	info, err := os.Stat(assetsDir)
 
 	if err != nil {
