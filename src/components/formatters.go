@@ -1,9 +1,10 @@
-package main
+package components
 
 import (
 	"fmt"
 	"strconv"
 	"time"
+    "github.com/emanueldonalds/property-viewer/db"
 )
 
 func formatPrice(value int) string {
@@ -44,10 +45,10 @@ func parseTime(value string) time.Time {
 	return t
 }
 
-func formatPrevPrice(priceHistory []PriceChange) string {
+func formatPrevPrice(priceHistory []db.PriceChange) string {
 	if len(priceHistory) == 0 {
 		return ""
 	}
 	var lastPrice = priceHistory[0]
-	return fmt.Sprintf("%s € (%s)", formatInt(lastPrice.price), formatDate(lastPrice.lastSeen))
+	return fmt.Sprintf("%s € (%s)", formatInt(lastPrice.Price), formatDate(lastPrice.LastSeen))
 }

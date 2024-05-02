@@ -1,10 +1,11 @@
-package main;
+package components;
 
 import (
 	"strconv"
+    "github.com/emanueldonalds/property-viewer/db"
 )
 
-templ result(listings []Listing) {
+templ Result(listings []db.Listing) {
 	<div class="result-section table-stats">
 		<p>Rows: { strconv.Itoa(len(listings)) }</p>
 	</div>
@@ -27,16 +28,16 @@ templ result(listings []Listing) {
 			<tbody>
 				for _, x := range listings {
 					<tr>
-						<td class="address" title={ x.address }>{ x.address }</td>
-						<td>{ formatPrice(x.price) }</td>
-						<td>{ formatInt(x.size.value) } { x.size.unit }</td>
-						<td>{ formatPrice(x.priceOverArea) } </td>
-						<td>{ formatInt(x.rooms) }</td>
-						<td>{ formatInt(x.year) }</td>
-						<td>{ formatPrevPrice(x.priceHistory) }</td>
-						<td>{ formatDate(x.firstSeen) }</td>
-						<td>{ x.agency }</td>
-						<td class="url"><a href={ templ.URL(x.url) }>{ x.url }</a></td>
+						<td class="address" title={ x.Address }>{ x.Address }</td>
+						<td>{ formatPrice(x.Price) }</td>
+						<td>{ formatInt(x.Size.Value) } { x.Size.Unit }</td>
+						<td>{ formatPrice(x.PriceOverArea) } </td>
+						<td>{ formatInt(x.Rooms) }</td>
+						<td>{ formatInt(x.Year) }</td>
+						<td>{ formatPrevPrice(x.PriceHistory) }</td>
+						<td>{ formatDate(x.FirstSeen) }</td>
+						<td>{ x.Agency }</td>
+						<td class="url"><a href={ templ.URL(x.Url) }>{ x.Url }</a></td>
 					</tr>
 				}
 			</tbody>
