@@ -2,45 +2,47 @@ package components;
 
 import (
 	"strconv"
-    "github.com/emanueldonalds/property-viewer/db"
+	"github.com/emanueldonalds/property-viewer/db"
 )
 
-templ Result(listings []db.Listing) {
-	<div class="result-section table-stats">
-		<p>Rows: { strconv.Itoa(len(listings)) }</p>
+templ Result(listings []db.Listing, lastScrape db.ScrapeEvent) {
+	<div id="metadata">
+			Rows: { strconv.Itoa(len(listings)) }
+			&emsp;
+			Updated: { formatDateTime(lastScrape.Date) }
+			&emsp;
+			<a href="https://github.com/emanueldonalds/property-viewer">Source code</a>
 	</div>
-	<div class="result-section table-wrapper">
-		<table>
-			<thead>
+	<table id="result">
+		<thead>
+			<tr>
+				<th><a class="sortable" onclick="sort('address')">Address</a></th>
+				<th><a class="sortable" onclick="sort('price')">Price</a></th>
+				<th><a class="sortable" onclick="sort('size_value')">Area</a></th>
+				<th><a class="sortable" onclick="sort('price_over_area')">Price/m2</a></th>
+				<th><a class="sortable" onclick="sort('rooms')">Rooms</a></th>
+				<th><a class="sortable" onclick="sort('build_year')">Year</a></th>
+				<th>Old price</th>
+				<th><a class="sortable" onclick="sort('first_seen')">First seen</a></th>
+				<th><a class="sortable" onclick="sort('agency')">Agency</a></th>
+				<th><a class="sortable" onclick="sort('url')">Url</a></th>
+			</tr>
+		</thead>
+		<tbody>
+			for _, x := range listings {
 				<tr>
-					<th><a class="sortable" onclick="sort('address')">Address</a></th>
-					<th><a class="sortable" onclick="sort('price')">Price</a></th>
-					<th><a class="sortable" onclick="sort('size_value')">Area</a></th>
-					<th><a class="sortable" onclick="sort('price_over_area')">Price/m2</a></th>
-					<th><a class="sortable" onclick="sort('rooms')">Rooms</a></th>
-					<th><a class="sortable" onclick="sort('build_year')">Year</a></th>
-					<th>Old price</th>
-					<th><a class="sortable" onclick="sort('first_seen')">First seen</a></th>
-					<th><a class="sortable" onclick="sort('agency')">Agency</a></th>
-					<th><a class="sortable" onclick="sort('url')">Url</a></th>
+					<td class="address" title={ x.Address }>{ x.Address }</td>
+					<td>{ formatPrice(x.Price) }</td>
+					<td>{ formatInt(x.Size.Value) } { x.Size.Unit }</td>
+					<td>{ formatPrice(x.PriceOverArea) } </td>
+					<td>{ formatInt(x.Rooms) }</td>
+					<td>{ formatInt(x.Year) }</td>
+					<td>{ formatPrevPrice(x.PriceHistory) }</td>
+					<td>{ formatDate(x.FirstSeen) }</td>
+					<td>{ x.Agency }</td>
+					<td><a href={ templ.URL(x.Url) }>{ x.Url }</a></td>
 				</tr>
-			</thead>
-			<tbody>
-				for _, x := range listings {
-					<tr>
-						<td class="address" title={ x.Address }>{ x.Address }</td>
-						<td>{ formatPrice(x.Price) }</td>
-						<td>{ formatInt(x.Size.Value) } { x.Size.Unit }</td>
-						<td>{ formatPrice(x.PriceOverArea) } </td>
-						<td>{ formatInt(x.Rooms) }</td>
-						<td>{ formatInt(x.Year) }</td>
-						<td>{ formatPrevPrice(x.PriceHistory) }</td>
-						<td>{ formatDate(x.FirstSeen) }</td>
-						<td>{ x.Agency }</td>
-						<td class="url"><a href={ templ.URL(x.Url) }>{ x.Url }</a></td>
-					</tr>
-				}
-			</tbody>
-		</table>
-	</div>
+			}
+		</tbody>
+	</table>
 }

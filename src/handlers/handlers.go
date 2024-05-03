@@ -20,7 +20,8 @@ func IndexHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
 
 func FilterHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
 	listings := GetListings(r, sqldb)
-	index := components.Result(listings)
+	lastScrape := GetLastScrape(sqldb)
+	index := components.Result(listings, lastScrape)
 	index.Render(r.Context(), w)
 }
 

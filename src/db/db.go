@@ -12,7 +12,7 @@ func GetDb() *sql.DB {
 	if dbPass == "" {
 		panic("PROPERTY_VIEWER_DB_PASSWORD must be set.")
 	}
-    if dbPass == "" {
+    if dbHost == "" {
 		panic("PROPERTY_VIEWER_DB_HOST must be set.")
     }
 

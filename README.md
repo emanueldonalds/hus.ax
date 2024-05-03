@@ -1,6 +1,6 @@
 # Property viewer
 
-https://test.edonalds.com/
+https://hus.ax/
 
 View properties listed on Åland. 
 
@@ -14,13 +14,16 @@ Built with Go, templ and HTMX.
 ## Running locally
 Start the test database
 
-`docker build . -t property-viewer-mariadb && docker run -itd --name property-viewer-mariadb -p 3306:3306 property-viewer-mariadb`
+```
+docker build . -t property-viewer-mariadb 
+docker run -d --name property-viewer-mariadb -p 3306:3306 property-viewer-mariadb
+```
 
 Then run with env variables:
 
-`cd src`
-
 ```
+cd src
+
 PROPERTY_VIEWER_DB_HOST=localhost \
 PROPERTY_VIEWER_DB_PASSWORD=abc123 \
 templ generate --watch --cmd 'go run .'

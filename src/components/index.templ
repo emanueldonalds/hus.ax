@@ -13,31 +13,28 @@ templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
 			<link href="/assets/style.css" rel="stylesheet"/>
 		</head>
 		<body>
-			<div class="container">
-				<div class="container-section" id="search">
-					<form class="search-section" id="search" hx-get="/filter" hx-target="#result">
-						<h1>Fastigheter Åland</h1>
-						@inputRange("price_min", "price_max", "Price")
-						@inputRange("build_year_min", "build_year_max", "Year")
-						@inputRange("size_value_min", "size_value_max", "Area")
-						@inputRange("price_over_area_min", "price_over_area_max", "Price/m2")
-						@inputAgency()
-						@inputIncludeDeleted()
-						<input type="hidden" id="order_by" name="order_by"/>
-						<input type="hidden" id="sort_order" name="sort_order"/>
-						<div class="spacer-v"></div>
-						<button id="send" type="submit">Search</button>
-					</form>
-					<div class="search-section" id="metadata">
-						<span>
-							Last scraped:
-							{ formatDate(lastScrape.Date) }
-						</span>
-					</div>
+			<div id="search">
+				<div id="heading">
+					<h1>Hus.ax</h1>
+					<p id="description">Property listings on Åland</p>
 				</div>
-				<div class="container-section" id="result">
-					@Result(listings)
+				<form id="search" hx-get="/filter" hx-target="#result" hx-trigger="change, submit">
+					@inputRange("price_min", "price_max", "Price")
+					@inputRange("build_year_min", "build_year_max", "Year")
+					@inputRange("size_value_min", "size_value_max", "Area")
+					@inputRange("price_over_area_min", "price_over_area_max", "Price/m2")
+					@inputAgency()
+					@inputIncludeDeleted()
+					<input type="hidden" id="order_by" name="order_by"/>
+					<input type="hidden" id="sort_order" name="sort_order"/>
+					<button id="send" type="submit">Search</button>
+				</form>
+				<div id="about" class="about">
+					<p></p>
 				</div>
+			</div>
+			<div id="result">
+				@Result(listings, lastScrape)
 			</div>
 			<script src="/assets/script.js"></script>
 		</body>
@@ -45,22 +42,18 @@ templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
 }
 
 templ inputRange(minId string, maxId string, title string) {
-	<div class="input-range-container range">
-		<p class="input-label">{ title }</p>
-		<div class="input-container">
-			<label class="range-label" for={ minId }>Min</label>
-			<input class="input-field" id={ minId } name={ minId } type="number"/>
-		</div>
-		<div class="input-container">
-			<label class="range-label" for={ maxId }>Max</label>
-			<input class="input-field" id={ maxId } name={ maxId } type="number"/>
+	<div class="input-group">
+		<label>{ title }</label>
+		<div class="input-range-fields">
+			<input class="input-field" placeholder="min" id={ minId } name={ minId } type="number"/>
+			<input class="input-field" placeholder="max" id={ maxId } name={ maxId } type="number"/>
 		</div>
 	</div>
 }
 
 templ inputAgency() {
-	<div class="input-container agency">
-		<label class="input-label" for="agency">Agency</label>
+	<div class="input-group">
+		<label for="agency">Agency</label>
 		<select id="agency" name="agency">
 			<option value="">All</option>
 			<option>Mäklarhuset</option>
@@ -73,8 +66,8 @@ templ inputAgency() {
 }
 
 templ inputIncludeDeleted() {
-	<div class="input-container">
-		<label class="input-label" for="include_deleted">Include deleted</label>
-		<input class="checkbox include-deleted" id="include_deleted" name="include_deleted" type="checkbox" value="true"/>
+	<div class="input-group">
+		<label for="include_deleted">Include deleted</label>
+		<input id="include_deleted" name="include_deleted" type="checkbox" value="true"/>
 	</div>
 }

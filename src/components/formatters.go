@@ -2,6 +2,7 @@ package components
 
 import (
 	"fmt"
+    "strings"
 	"strconv"
 	"time"
     "github.com/emanueldonalds/property-viewer/db"
@@ -37,12 +38,21 @@ func formatDate(value string) string {
 	return formatted
 }
 
+func formatDateTime(value string) string {
+	if value == "" {
+		return ""
+	}
+	t := parseTime(value)
+    formatted := t.Format("2 Jan 15:04")
+	return formatted
+}
+
 func parseTime(value string) time.Time {
 	t, err := time.Parse("2006-01-02 15:04:05.999999", value)
 	if err != nil {
 		panic(err.Error())
 	}
-	return t
+	return t.In(time.Local);
 }
 
 func formatPrevPrice(priceHistory []db.PriceChange) string {
@@ -50,5 +60,5 @@ func formatPrevPrice(priceHistory []db.PriceChange) string {
 		return ""
 	}
 	var lastPrice = priceHistory[0]
-	return fmt.Sprintf("%s € (%s)", formatInt(lastPrice.Price), formatDate(lastPrice.LastSeen))
+	return strings.TrimSpace(fmt.Sprintf("%s € (%s)", formatInt(lastPrice.Price), formatDate(lastPrice.LastSeen)))
 }
