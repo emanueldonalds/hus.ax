@@ -5,15 +5,22 @@ import (
 	"github.com/emanueldonalds/property-viewer/db"
 )
 
-templ Result(listings []db.Listing, lastScrape db.ScrapeEvent) {
+func getRowClass(deleted bool) string {
+	if deleted {
+		return "disabled"
+	}
+	return ""
+}
+
+templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 	<div id="metadata">
-			Rows: { strconv.Itoa(len(listings)) }
-			&emsp;
-			Updated: { formatDateTime(lastScrape.Date) }
-			&emsp;
-			<a href="https://github.com/emanueldonalds/property-viewer">Source code</a>
+		Rows: { strconv.Itoa(len(listings)) }
+		&emsp;
+		Updated: { formatDateTime(lastScrape.Date) }
+		&emsp;
+		<a href="https://github.com/emanueldonalds/property-viewer">Source code</a>
 	</div>
-	<table id="result">
+	<table id="listings-table">
 		<thead>
 			<tr>
 				<th><a class="sortable" onclick="sort('address')">Address</a></th>
@@ -30,7 +37,7 @@ templ Result(listings []db.Listing, lastScrape db.ScrapeEvent) {
 		</thead>
 		<tbody>
 			for _, x := range listings {
-				<tr>
+				<tr class={ getRowClass(x.Deleted) }>
 					<td class="address" title={ x.Address }>{ x.Address }</td>
 					<td>{ formatPrice(x.Price) }</td>
 					<td>{ formatInt(x.Size.Value) } { x.Size.Unit }</td>

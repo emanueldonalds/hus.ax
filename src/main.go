@@ -2,19 +2,19 @@ package main
 
 import (
 	"fmt"
+	"github.com/emanueldonalds/property-viewer/db"
+	"github.com/emanueldonalds/property-viewer/handlers"
+	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"net/http"
 	"os"
-	_ "github.com/go-sql-driver/mysql"
-    "github.com/emanueldonalds/property-viewer/db"
-    "github.com/emanueldonalds/property-viewer/handlers"
 )
 
 func main() {
 	assetsDir := os.Getenv("PROPERTY_VIEWER_ASSETS_DIR")
-    if (assetsDir == "") {
-        assetsDir = "./assets";
-    }
+	if assetsDir == "" {
+		assetsDir = "./assets"
+	}
 
 	info, err := os.Stat(assetsDir)
 
@@ -29,7 +29,7 @@ func main() {
 	fs := http.FileServer(http.Dir(assetsDir))
 	db := db.GetDb()
 
-    mux.Handle("/assets/", http.StripPrefix("/assets/", fs))
+	mux.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { handlers.IndexHandler(w, r, db) })
 	mux.HandleFunc("/filter", func(w http.ResponseWriter, r *http.Request) { handlers.FilterHandler(w, r, db) })

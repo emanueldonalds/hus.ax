@@ -1,4 +1,4 @@
-# Property viewer
+# Hus.ax
 
 https://hus.ax/
 

@@ -9,12 +9,13 @@ import (
 func GetDb() *sql.DB {
 	dbHost := os.Getenv("PROPERTY_VIEWER_DB_HOST")
 	dbPass := os.Getenv("PROPERTY_VIEWER_DB_PASSWORD")
+
+	if dbHost == "" {
+		panic("PROPERTY_VIEWER_DB_HOST must be set.")
+	}
 	if dbPass == "" {
 		panic("PROPERTY_VIEWER_DB_PASSWORD must be set.")
 	}
-    if dbHost == "" {
-		panic("PROPERTY_VIEWER_DB_HOST must be set.")
-    }
 
 	connString := fmt.Sprintf("property-viewer:%s@tcp(%s:3306)/property_api", dbPass, dbHost)
 
@@ -26,6 +27,6 @@ func GetDb() *sql.DB {
 	db.SetConnMaxLifetime(180)
 	db.SetMaxOpenConns(10)
 	db.SetMaxIdleConns(10)
-    
+
 	return db
 }

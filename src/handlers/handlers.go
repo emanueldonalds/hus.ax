@@ -3,12 +3,11 @@ package handlers
 import (
 	"database/sql"
 	"fmt"
+	"github.com/emanueldonalds/property-viewer/components"
+	"github.com/emanueldonalds/property-viewer/db"
 	"net/http"
 	"slices"
 	"strings"
-
-	"github.com/emanueldonalds/property-viewer/components"
-	"github.com/emanueldonalds/property-viewer/db"
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
@@ -21,7 +20,7 @@ func IndexHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
 func FilterHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
 	listings := GetListings(r, sqldb)
 	lastScrape := GetLastScrape(sqldb)
-	index := components.Result(listings, lastScrape)
+	index := components.Listings(listings, lastScrape)
 	index.Render(r.Context(), w)
 }
 
@@ -58,6 +57,7 @@ func GetListings(r *http.Request, sqldb *sql.DB) []db.Listing {
 			"listing.last_seen, "+
 			"agency, "+
 			"url, "+
+			"deleted = 1, "+
 			"IFNULL(price_change.price, -1), "+
 			"IFNULL(price_change.last_seen, \"\") "+
 			"FROM listing "+
@@ -115,6 +115,7 @@ func GetListings(r *http.Request, sqldb *sql.DB) []db.Listing {
 			&rowListing.LastSeen,
 			&rowListing.Agency,
 			&rowListing.Url,
+			&rowListing.Deleted,
 			&rowPriceChange.Price,
 			&rowPriceChange.LastSeen)
 
@@ -240,6 +241,5 @@ func ResolveDeleted(qIncludeDeleted string) string {
 		return "deleted IN (true, false) "
 	}
 
-    panic("Invalid include deleted value " + qIncludeDeleted)
+	panic("Invalid include deleted value " + qIncludeDeleted)
 }
-
