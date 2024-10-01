@@ -33,6 +33,7 @@ func main() {
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { handlers.IndexHandler(w, r, db) })
 	mux.HandleFunc("/filter", func(w http.ResponseWriter, r *http.Request) { handlers.FilterHandler(w, r, db) })
+    mux.HandleFunc("/rss", func(w http.ResponseWriter, r *http.Request) { handlers.RssHandler(w, r, db, mux) })
 
 	fmt.Println("Listening on :4932")
 	log.Fatal(http.ListenAndServe(":4932", mux))

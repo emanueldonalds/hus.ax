@@ -24,6 +24,50 @@ func FilterHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
 	index.Render(r.Context(), w)
 }
 
+func RssHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB, mux *http.ServeMux) {
+
+    listings := GetListings(r, sqldb)
+
+	rssPage := 
+`<?xml version="1.0"?>
+  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+  <title>NASA Space Station News</title>
+  <link>http://www.nasa.gov/</link>
+  <description>A RSS news feed containing the latest NASA press releases on the International Space Station.</description>
+  <language>en-us</language>
+  <pubDate>Tue, 10 Jun 2003 04:00:00 GMT</pubDate>
+  <lastBuildDate>Fri, 21 Jul 2023 09:04 EDT</lastBuildDate>
+  <docs>https://www.rssboard.org/rss-specification</docs>
+  <generator>Blosxom 2.1.2</generator>
+  <managingEditor>neil.armstrong@example.com (Neil Armstrong)</managingEditor>
+  <webMaster>sally.ride@example.com (Sally Ride)</webMaster>
+  <atom:link href="https://www.rssboard.org/files/sample-rss-2.xml" rel="self" type="application/rss+xml" />
+`;
+
+    //Add content
+    for i := 0; i < len(listings); i++ {
+        rssPage +=
+`  <item>
+    <title>Louisiana Students to Hear from NASA Astronauts Aboard Space Station</title>
+    <link>http://www.nasa.gov/press-release/louisiana-students-to-hear-from-nasa-astronauts-aboard-space-station</link>
+    <description>As part of the state's first Earth-to-space call, students from Louisiana will have an opportunity soon to hear from NASA astronauts aboard the International Space Station.</description>
+    <pubDate>Fri, 21 Jul 2023 09:04 EDT</pubDate>
+    <guid>http://www.nasa.gov/press-release/louisiana-students-to-hear-from-nasa-astronauts-aboard-space-station</guid>
+  </item>
+`
+    }
+
+
+   rssPage +=
+`  </channel>
+</rss>
+`;
+	w.Header().Set("Content-Type", "application/rss+xml")
+	w.Write([]byte(rssPage))
+
+}
+
 func GetListings(r *http.Request, sqldb *sql.DB) []db.Listing {
 	agency := r.URL.Query().Get("agency")
 	qPriceMin := r.URL.Query().Get("price_min")
