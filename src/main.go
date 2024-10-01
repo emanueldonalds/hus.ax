@@ -3,7 +3,8 @@ package main
 import (
 	"fmt"
 	"github.com/emanueldonalds/property-viewer/db"
-	"github.com/emanueldonalds/property-viewer/handlers"
+	"github.com/emanueldonalds/property-viewer/rss"
+	"github.com/emanueldonalds/property-viewer/web"
 	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"net/http"
@@ -11,18 +12,15 @@ import (
 )
 
 func main() {
-	assetsDir := os.Getenv("PROPERTY_VIEWER_ASSETS_DIR")
-	if assetsDir == "" {
-		assetsDir = "./assets"
-	}
+	assetsDir := "./assets"
 
 	info, err := os.Stat(assetsDir)
 
 	if err != nil {
-		panic("Could not stat assets directory. PROPERTY_VIEWER_ASSETS_DIR must be set.")
+		panic("Could not stat assets directory. Make sure assets dir is in the working directory.")
 	}
 	if info.Mode().Perm()&0444 != 0444 {
-		panic("Can not read assets")
+		panic("Missing permissions to read assets")
 	}
 
 	mux := http.NewServeMux()
@@ -31,8 +29,9 @@ func main() {
 
 	mux.Handle("/assets/", http.StripPrefix("/assets/", fs))
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { handlers.IndexHandler(w, r, db) })
-	mux.HandleFunc("/filter", func(w http.ResponseWriter, r *http.Request) { handlers.FilterHandler(w, r, db) })
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { web.IndexHandler(w, r, db) })
+	mux.HandleFunc("/filter", func(w http.ResponseWriter, r *http.Request) { web.FilterHandler(w, r, db) })
+	mux.HandleFunc("/rss", func(w http.ResponseWriter, r *http.Request) { rss.RssHandler(w, r, db) })
 
 	fmt.Println("Listening on :4932")
 	log.Fatal(http.ListenAndServe(":4932", mux))

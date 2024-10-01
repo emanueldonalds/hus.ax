@@ -1,8 +1,9 @@
-package components;
+package web;
 
 import (
 	"strconv"
 	"github.com/emanueldonalds/property-viewer/db"
+	"github.com/emanueldonalds/property-viewer/formatters"
 )
 
 func getRowClass(deleted bool) string {
@@ -16,9 +17,11 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 	<div id="metadata">
 		Rows: { strconv.Itoa(len(listings)) }
 		&emsp;
-		Updated: { formatDateTime(lastScrape.Date) }
+		Updated: { formatters.FormatDateTime(lastScrape.Date) }
 		&emsp;
 		<a href="https://github.com/emanueldonalds/property-viewer">Source code</a>
+		&emsp;
+		<a href="/rss">RSS feed</a>
 	</div>
 	<table id="listings-table">
 		<thead>
@@ -39,13 +42,13 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 			for _, x := range listings {
 				<tr class={ getRowClass(x.Deleted) }>
 					<td class="address" title={ x.Address }>{ x.Address }</td>
-					<td>{ formatPrice(x.Price) }</td>
-					<td>{ formatInt(x.Size.Value) } { x.Size.Unit }</td>
-					<td>{ formatPrice(x.PriceOverArea) } </td>
-					<td>{ formatInt(x.Rooms) }</td>
-					<td>{ formatInt(x.Year) }</td>
-					<td>{ formatPrevPrice(x.PriceHistory) }</td>
-					<td>{ formatDate(x.FirstSeen) }</td>
+					<td>{ formatters.FormatPrice(x.Price) }</td>
+					<td>{ formatters.FormatInt(x.Size.Value) } { x.Size.Unit }</td>
+					<td>{ formatters.FormatPrice(x.PriceOverArea) } </td>
+					<td>{ formatters.FormatInt(x.Rooms) }</td>
+					<td>{ formatters.FormatInt(x.Year) }</td>
+					<td>{ formatters.FormatPrevPrice(x.PriceHistory) }</td>
+					<td>{ formatters.FormatDate(x.FirstSeen) }</td>
 					<td>{ x.Agency }</td>
 					<td><a href={ templ.URL(x.Url) }>{ x.Url }</a></td>
 				</tr>

@@ -2,7 +2,8 @@
 Description=Property Viewer service 
  
 [Service]
-ExecStart=/home/properties/property-viewer/property-viewer
+WorkingDirectory=/home/properties/property-viewer-depl
+ExecStart=/home/properties/property-viewer-depl/property-viewer
 User=properties
 
 [Install]

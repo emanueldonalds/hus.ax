@@ -13,6 +13,7 @@ type Listing struct {
 	PriceHistory  []PriceChange
 	FirstSeen     string
 	LastSeen      string
+	LastUpdated   string
 	Deleted       bool
 }
 
