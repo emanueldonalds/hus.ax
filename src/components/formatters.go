@@ -8,28 +8,28 @@ import (
 	"time"
 )
 
-func formatPrice(value int) string {
+func FormatPrice(value int) string {
 	if value <= 0 {
 		return ""
 	}
-	return formatInt(value) + " €"
+	return FormatInt(value) + " €"
 }
 
-func formatInt(value int) string {
+func FormatInt(value int) string {
 	if value <= 0 {
 		return ""
 	}
 	return strconv.Itoa(value)
 }
 
-func formatFloat(value float32) string {
+func FormaFloat(value float32) string {
 	if value < 0 {
 		return ""
 	}
 	return fmt.Sprintf("%.0f", value)
 }
 
-func formatDate(value string) string {
+func FormatDate(value string) string {
 	if value == "" {
 		return ""
 	}
@@ -38,7 +38,16 @@ func formatDate(value string) string {
 	return formatted
 }
 
-func formatDateTime(value string) string {
+func FormatFullDate(value string) string {
+	if value == "" {
+		return ""
+	}
+	t := parseTime(value)
+	formatted := t.Format("2 Jan 2006")
+	return formatted
+}
+
+func FormatDateTime(value string) string {
 	if value == "" {
 		return ""
 	}
@@ -55,10 +64,14 @@ func parseTime(value string) time.Time {
 	return t.In(time.Local)
 }
 
-func formatPrevPrice(priceHistory []db.PriceChange) string {
+func FormatPrevPrice(priceHistory []db.PriceChange) string {
 	if len(priceHistory) == 0 {
 		return ""
 	}
 	var lastPrice = priceHistory[0]
-	return strings.TrimSpace(fmt.Sprintf("%s € (%s)", formatInt(lastPrice.Price), formatDate(lastPrice.LastSeen)))
+	return FormatPriceChange(lastPrice);
+}
+
+func FormatPriceChange(priceChange db.PriceChange) string {
+	return strings.TrimSpace(fmt.Sprintf("%s € (%s)", FormatInt(priceChange.Price), FormatDate(priceChange.LastSeen)))
 }

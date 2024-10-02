@@ -53,7 +53,7 @@ func Listings(listings []db.Listing, lastScrape db.ScrapeEvent) templ.Component 
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(formatDateTime(lastScrape.Date))
+		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(FormatDateTime(lastScrape.Date))
 		if templ_7745c5c3_Err != nil {
 			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/listings.templ`, Line: 19, Col: 44}
 		}
@@ -115,7 +115,7 @@ func Listings(listings []db.Listing, lastScrape db.ScrapeEvent) templ.Component 
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var8 string
-			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(formatPrice(x.Price))
+			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(FormatPrice(x.Price))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/listings.templ`, Line: 42, Col: 31}
 			}
@@ -128,7 +128,7 @@ func Listings(listings []db.Listing, lastScrape db.ScrapeEvent) templ.Component 
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var9 string
-			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(formatInt(x.Size.Value))
+			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(FormatInt(x.Size.Value))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/listings.templ`, Line: 43, Col: 34}
 			}
@@ -154,7 +154,7 @@ func Listings(listings []db.Listing, lastScrape db.ScrapeEvent) templ.Component 
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var11 string
-			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(formatPrice(x.PriceOverArea))
+			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(FormatPrice(x.PriceOverArea))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/listings.templ`, Line: 44, Col: 39}
 			}
@@ -167,7 +167,7 @@ func Listings(listings []db.Listing, lastScrape db.ScrapeEvent) templ.Component 
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var12 string
-			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(formatInt(x.Rooms))
+			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(FormatInt(x.Rooms))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/listings.templ`, Line: 45, Col: 29}
 			}
@@ -180,7 +180,7 @@ func Listings(listings []db.Listing, lastScrape db.ScrapeEvent) templ.Component 
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var13 string
-			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(formatInt(x.Year))
+			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(FormatInt(x.Year))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/listings.templ`, Line: 46, Col: 28}
 			}
@@ -193,7 +193,7 @@ func Listings(listings []db.Listing, lastScrape db.ScrapeEvent) templ.Component 
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var14 string
-			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(formatPrevPrice(x.PriceHistory))
+			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(FormatPrevPrice(x.PriceHistory))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/listings.templ`, Line: 47, Col: 42}
 			}
@@ -206,7 +206,7 @@ func Listings(listings []db.Listing, lastScrape db.ScrapeEvent) templ.Component 
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var15 string
-			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(formatDate(x.FirstSeen))
+			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(FormatDate(x.FirstSeen))
 			if templ_7745c5c3_Err != nil {
 				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/listings.templ`, Line: 48, Col: 34}
 			}

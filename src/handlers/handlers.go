@@ -1,13 +1,18 @@
 package handlers
 
 import (
+	"bytes"
 	"database/sql"
 	"fmt"
+	"net/http"
+	"os"
+	"slices"
+	"strconv"
+	"strings"
+	"text/template"
+
 	"github.com/emanueldonalds/property-viewer/components"
 	"github.com/emanueldonalds/property-viewer/db"
-	"net/http"
-	"slices"
-	"strings"
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
@@ -24,48 +29,94 @@ func FilterHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
 	index.Render(r.Context(), w)
 }
 
-func RssHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB, mux *http.ServeMux) {
+func RssHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
+	listings := GetListings(r, sqldb)
+	lastScrape := GetLastScrape(sqldb)
 
-    listings := GetListings(r, sqldb)
+	documentTemplate := readFile("/rss/document.xml")
 
-	rssPage := 
-`<?xml version="1.0"?>
-  <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-  <title>NASA Space Station News</title>
-  <link>http://www.nasa.gov/</link>
-  <description>A RSS news feed containing the latest NASA press releases on the International Space Station.</description>
-  <language>en-us</language>
-  <pubDate>Tue, 10 Jun 2003 04:00:00 GMT</pubDate>
-  <lastBuildDate>Fri, 21 Jul 2023 09:04 EDT</lastBuildDate>
-  <docs>https://www.rssboard.org/rss-specification</docs>
-  <generator>Blosxom 2.1.2</generator>
-  <managingEditor>neil.armstrong@example.com (Neil Armstrong)</managingEditor>
-  <webMaster>sally.ride@example.com (Sally Ride)</webMaster>
-  <atom:link href="https://www.rssboard.org/files/sample-rss-2.xml" rel="self" type="application/rss+xml" />
-`;
+	items := []RssItem{}
+	for i := 0; i < len(listings); i++ {
+		listing := listings[i]
 
-    //Add content
-    for i := 0; i < len(listings); i++ {
-        rssPage +=
-`  <item>
-    <title>Louisiana Students to Hear from NASA Astronauts Aboard Space Station</title>
-    <link>http://www.nasa.gov/press-release/louisiana-students-to-hear-from-nasa-astronauts-aboard-space-station</link>
-    <description>As part of the state's first Earth-to-space call, students from Louisiana will have an opportunity soon to hear from NASA astronauts aboard the International Space Station.</description>
-    <pubDate>Fri, 21 Jul 2023 09:04 EDT</pubDate>
-    <guid>http://www.nasa.gov/press-release/louisiana-students-to-hear-from-nasa-astronauts-aboard-space-station</guid>
-  </item>
-`
-    }
+		priceChanges := []string{}
 
+		for y := 0; y < len(listing.PriceHistory); y++ {
+			var hist db.PriceChange = listing.PriceHistory[y]
+			priceChanges = append(priceChanges, components.FormatPriceChange(hist))
+		}
 
-   rssPage +=
-`  </channel>
-</rss>
-`;
+		items = append(items, RssItem{
+			Title: listing.Url,
+			Link:  listing.Url,
+			Description: fmt.Sprintf(
+				"Address: [%s], Price: [%s], Year: [%s], Size: [%s %s], Rooms: [%s], Price over area [%s], Price history: [%s], Agency [%s], First seen [%s], Last seen [%s], Deleted [%s]",
+				listing.Address,
+				components.FormatPrice(listing.Price),
+				components.FormatInt(listing.Year),
+				components.FormatInt(listing.Size.Value),
+				listing.Size.Unit,
+				components.FormatInt(listing.Rooms),
+				components.FormatInt(listing.PriceOverArea),
+				strings.Join(priceChanges, ", "),
+				listing.Agency,
+				components.FormatFullDate(listing.FirstSeen),
+				components.FormatFullDate(listing.LastSeen),
+				strconv.FormatBool(listing.Deleted),
+			),
+			PubDate: listing.FirstSeen,
+			Guid:    listing.Id,
+		})
+	}
+
+	data := RssPage{
+		Title:       "Hus.ax",
+		Description: "Property listings on Åland RSS feed",
+		PubDate:     components.FormatFullDate(lastScrape.Date),
+		WebMaster:   "husax@protonmail.com",
+		Items:       items,
+	}
+
+	tmpl, err := template.New("document").Parse(documentTemplate)
+	if err != nil {
+		panic(err)
+	}
+
+	var res bytes.Buffer
+	tmpl.Execute(&res, data)
+
 	w.Header().Set("Content-Type", "application/rss+xml")
-	w.Write([]byte(rssPage))
+	w.Write([]byte(res.Bytes()))
+}
 
+type RssPage struct {
+	Title       string
+	Description string
+	PubDate     string
+	WebMaster   string
+	Items       []RssItem
+}
+
+type RssItem struct {
+	Title       string
+	Link        string
+	Description string
+	PubDate     string
+	Guid        string
+}
+
+func readFile(filename string) string {
+	pwd, err := os.Getwd()
+	if err != nil {
+		panic("Error reading pwd")
+	}
+	path := pwd + filename
+	fileBytes, err := os.ReadFile(path)
+	if err != nil {
+		panic("Error reading file " + filename)
+	}
+	content := string(fileBytes)
+	return content
 }
 
 func GetListings(r *http.Request, sqldb *sql.DB) []db.Listing {

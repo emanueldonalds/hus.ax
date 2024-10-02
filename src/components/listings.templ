@@ -16,7 +16,7 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 	<div id="metadata">
 		Rows: { strconv.Itoa(len(listings)) }
 		&emsp;
-		Updated: { formatDateTime(lastScrape.Date) }
+		Updated: { FormatDateTime(lastScrape.Date) }
 		&emsp;
 		<a href="https://github.com/emanueldonalds/property-viewer">Source code</a>
 	</div>
@@ -39,13 +39,13 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 			for _, x := range listings {
 				<tr class={ getRowClass(x.Deleted) }>
 					<td class="address" title={ x.Address }>{ x.Address }</td>
-					<td>{ formatPrice(x.Price) }</td>
-					<td>{ formatInt(x.Size.Value) } { x.Size.Unit }</td>
-					<td>{ formatPrice(x.PriceOverArea) } </td>
-					<td>{ formatInt(x.Rooms) }</td>
-					<td>{ formatInt(x.Year) }</td>
-					<td>{ formatPrevPrice(x.PriceHistory) }</td>
-					<td>{ formatDate(x.FirstSeen) }</td>
+					<td>{ FormatPrice(x.Price) }</td>
+					<td>{ FormatInt(x.Size.Value) } { x.Size.Unit }</td>
+					<td>{ FormatPrice(x.PriceOverArea) } </td>
+					<td>{ FormatInt(x.Rooms) }</td>
+					<td>{ FormatInt(x.Year) }</td>
+					<td>{ FormatPrevPrice(x.PriceHistory) }</td>
+					<td>{ FormatDate(x.FirstSeen) }</td>
 					<td>{ x.Agency }</td>
 					<td><a href={ templ.URL(x.Url) }>{ x.Url }</a></td>
 				</tr>
