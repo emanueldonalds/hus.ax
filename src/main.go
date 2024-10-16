@@ -5,7 +5,6 @@ import (
 	"github.com/emanueldonalds/property-viewer/db"
 	"github.com/emanueldonalds/property-viewer/rss"
 	"github.com/emanueldonalds/property-viewer/web"
-	_ "github.com/go-sql-driver/mysql"
 	"log"
 	"net/http"
 	"os"
