@@ -69,11 +69,8 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 			"IFNULL(listing.last_updated, listing.last_seen), "+
 			"agency, "+
 			"url, "+
-			"deleted = 1, "+
-			"IFNULL(price_change.price, -1), "+
-			"IFNULL(price_change.last_seen, \"\") "+
+			"deleted = 1 "+
 			"FROM listing "+
-			"LEFT JOIN price_change on price_change.listing_id = listing.id "+
 			"WHERE "+
 			ResolveDeleted(qIncludeDeleted)+
 			"AND agency = COALESCE(NULLIF(?, ''), agency) "+
@@ -113,7 +110,6 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 
 	for query.Next() {
 		var rowListing Listing
-		var rowPriceChange PriceChange
 		err := query.Scan(
 			&rowListing.Id,
 			&rowListing.Address,
@@ -128,9 +124,7 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 			&rowListing.LastUpdated,
 			&rowListing.Agency,
 			&rowListing.Url,
-			&rowListing.Deleted,
-			&rowPriceChange.Price,
-			&rowPriceChange.LastSeen)
+			&rowListing.Deleted)
 
 		if err != nil {
 			panic(err.Error())
