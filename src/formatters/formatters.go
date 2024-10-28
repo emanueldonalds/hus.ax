@@ -8,6 +8,21 @@ import (
 	"time"
 )
 
+var swedishMonths map[time.Month]string = map[time.Month]string{
+	time.January:   "Jan",
+	time.February:  "Feb",
+	time.March:     "Mar",
+	time.April:     "Apr",
+	time.May:       "Maj",
+	time.June:      "Jun",
+	time.July:      "Jul",
+	time.August:    "Aug",
+	time.September: "Sep",
+	time.October:   "Okt",
+	time.November:  "Nov",
+	time.December:  "Dec",
+}
+
 func FormatPrice(value int) string {
 	if value <= 0 {
 		return ""
@@ -34,7 +49,7 @@ func FormatDate(value string) string {
 		return ""
 	}
 	t := parseTime(value)
-	formatted := t.Format("2 Jan")
+	formatted := fmt.Sprintf("%d %s", t.Day(), swedishMonths[t.Month()])
 	return formatted
 }
 
@@ -43,7 +58,7 @@ func FormatFullDate(value string) string {
 		return ""
 	}
 	t := parseTime(value)
-	formatted := t.Format("2 Jan 2006")
+	formatted := fmt.Sprintf("%d %s %d", t.Day(), swedishMonths[t.Month()], t.Year())
 	return formatted
 }
 
@@ -52,7 +67,7 @@ func FormatDateTime(value string) string {
 		return ""
 	}
 	t := parseTime(value)
-	formatted := t.Format("2 Jan 15:04")
+	formatted := fmt.Sprintf("%d %s %02d:%02d", t.Day(), swedishMonths[t.Month()], t.Minute(), t.Second())
 	return formatted
 }
 
@@ -61,7 +76,7 @@ func FormatDateTimeRfc822(value string) string {
 		return ""
 	}
 	t := parseTime(value)
-    formatted := t.Format("Mon, 02 Jan 2006 15:04:05 -0700")
+	formatted := t.Format("Mon, 02 Jan 2006 15:04:05 -0700")
 	return formatted
 }
 
@@ -78,7 +93,7 @@ func FormatPrevPrice(priceHistory []db.PriceChange) string {
 		return ""
 	}
 	var lastPrice = priceHistory[0]
-	return FormatPriceChange(lastPrice);
+	return FormatPriceChange(lastPrice)
 }
 
 func FormatPriceChange(priceChange db.PriceChange) string {

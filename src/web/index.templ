@@ -4,11 +4,11 @@ import "github.com/emanueldonalds/property-viewer/db"
 
 templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
 	<!DOCTYPE html>
-	<html lang="en">
+	<html lang="sv">
 		<head>
 			<meta charset="utf-8"/>
 			<title>Fastigheter på Åland</title>
-			<meta name="description" content="Översikt av fastighetsannonser på Åland"/>
+			<meta name="description" content="Tydlig översikt av fastighetsannonser på Åland, med filtrering och RSS-flöde."/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<link rel="alternate" type="application/rss+xml" title="RSS feed" href="/rss"/>
 			<script src="/assets/htmx.min.js"></script>
@@ -33,18 +33,18 @@ templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
 			<div id="sidebar">
 				<div id="heading">
 					<h1>Hus.ax</h1>
-					<small>Property listings on Åland</small>
+					<small>Fastigheter på Åland</small>
 				</div>
 				<form id="filters" hx-get="/filter" hx-target="#listings" hx-trigger="change, submit">
-					@inputRange("price_min", "price_max", "Price")
-					@inputRange("build_year_min", "build_year_max", "Year")
+					@inputRange("price_min", "price_max", "Pris")
+					@inputRange("build_year_min", "build_year_max", "År")
 					@inputRange("size_value_min", "size_value_max", "Area")
-					@inputRange("price_over_area_min", "price_over_area_max", "Price/m2")
+					@inputRange("price_over_area_min", "price_over_area_max", "Pris/m2")
 					@inputAgency()
 					@inputIncludeDeleted()
 					<input type="hidden" id="order_by" name="order_by"/>
 					<input type="hidden" id="sort_order" name="sort_order"/>
-					<button id="send" type="submit">Apply</button>
+					<button id="send" type="submit">Filtrera</button>
 				</form>
 				<div id="about" class="about">
 					<p></p>
@@ -70,7 +70,7 @@ templ inputRange(minId string, maxId string, title string) {
 
 templ inputAgency() {
 	<div class="input-group">
-		<label for="agency">Agency</label>
+		<label for="agency">Mäklare</label>
 		<select id="agency" name="agency">
 			<option value="">All</option>
 			<option>Mäklarhuset</option>
@@ -84,7 +84,7 @@ templ inputAgency() {
 
 templ inputIncludeDeleted() {
 	<div class="input-group">
-		<label for="include_deleted">Include deleted</label>
+		<label for="include_deleted">Inkludera borttagna</label>
 		<input type="checkbox" id="include_deleted" name="include_deleted" value="true"/>
 	</div>
 }
