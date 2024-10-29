@@ -11,6 +11,7 @@ templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
 			<meta name="description" content="Tydlig översikt av fastighetsannonser på Åland, med filtrering och RSS-flöde."/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<link rel="alternate" type="application/rss+xml" title="RSS feed" href="/rss"/>
+			<link rel="icon" type="image/x-icon" href="/assets/favicon.ico"/>
 			<script src="/assets/htmx.min.js"></script>
 			<link href="/assets/style.css" rel="stylesheet"/>
 			<!-- Matomo -->
@@ -32,7 +33,10 @@ templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
 		<body>
 			<div id="sidebar">
 				<div id="heading">
-					<h1>Hus.ax</h1>
+					<div id="logo-container">
+						<img src="/assets/logo.png" alt="Page logo"/>
+						<h1 id="logo-text">Hus.ax</h1>
+					</div>
 					<small>Fastigheter på Åland</small>
 				</div>
 				<form id="filters" hx-get="/filter" hx-target="#listings" hx-trigger="change, submit">
