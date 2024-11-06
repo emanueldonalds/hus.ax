@@ -16,6 +16,7 @@ cp -r $REPO_DIR/src/assets $DEPL_DIR/assets
 cp $REPO_DIR/src/rss/template.xml $DEPL_DIR/rss/.
 
 cd $REPO_DIR/src
+templ generate
 env GOOS=linux GOARCH=amd64 /usr/local/go/bin/go build -o $DEPL_DIR/$APP_NAME
 
 sudo systemctl daemon-reload
