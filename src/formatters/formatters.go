@@ -49,7 +49,7 @@ func FormatDate(value string) string {
 		return ""
 	}
 	t := parseTime(value)
-	formatted := fmt.Sprintf("%d %s", t.Day(), swedishMonths[t.Month()])
+	formatted := fmt.Sprintf("%d %s %d", t.Day(), swedishMonths[t.Month()], t.Year())
 	return formatted
 }
 
