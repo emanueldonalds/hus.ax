@@ -21,3 +21,4 @@ env GOOS=linux GOARCH=amd64 /usr/local/go/bin/go build -o $DEPL_DIR/$APP_NAME
 
 sudo systemctl daemon-reload
 sudo systemctl restart $APP_NAME
+sudo systemctl enable $APP_NAME
