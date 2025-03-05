@@ -27,21 +27,7 @@ templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
 			<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/assets/icon-180x180.png"/>
 			<script src="/assets/htmx.min.js"></script>
 			<link href="/assets/style.css" rel="stylesheet"/>
-			<!-- Matomo -->
-			<script>
-              var _paq = window._paq = window._paq || [];
-              _paq.push(['disableCookies']);
-              _paq.push(['trackPageView']);
-              _paq.push(['enableLinkTracking']);
-              (function() {
-                var u="//analytics.edonalds.com/";
-                _paq.push(['setTrackerUrl', u+'matomo.php']);
-                _paq.push(['setSiteId', '4']);
-                var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-                g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-              })();
-            </script>
-			<!-- End Matomo Code -->
+            <script defer data-domain="hus.ax" src="https://analytics.edonalds.com/js/script.outbound-links.js"></script>
 		</head>
 		<body>
 			<div id="sidebar">
