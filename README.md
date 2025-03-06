@@ -6,7 +6,7 @@ View properties listed on Åland.
 
 Built with Go, templ and HTMX.
 
-This repo also hosts an API: https://github.com/emanueldonalds/property-api
+An API is also available: https://github.com/emanueldonalds/property-api
 
 Site analytics here: https://analytics.edonalds.com/hus.ax
 
