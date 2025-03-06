@@ -2,9 +2,13 @@
 
 https://hus.ax/
 
-View properties listed on Åland. 
+View properties listed on Åland.
 
 Built with Go, templ and HTMX.
+
+This repo also hosts an API: https://github.com/emanueldonalds/property-api
+
+Site analytics here: https://analytics.edonalds.com/hus.ax
 
 ## Requirements
 - Go 1.22.2
