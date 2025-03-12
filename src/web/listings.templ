@@ -35,22 +35,22 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 				<th>Tidigare pris</th>
 				<th><a class="sortable" onclick="sort('first_seen')">Upptäckt</a></th>
 				<th><a class="sortable" onclick="sort('agency')">Mäklare</a></th>
-				<th><a class="sortable" onclick="sort('url')">URL</a></th>
 			</tr>
 		</thead>
 		<tbody>
 			for _, x := range listings {
 				<tr class={ getRowClass(x.Deleted) }>
-					<td class="address" title={ x.Address }>{ x.Address }</td>
-					<td>{ formatters.FormatPrice(x.Price) }</td>
-					<td>{ formatters.FormatInt(x.Size.Value) } { x.Size.Unit }</td>
-					<td>{ formatters.FormatPrice(x.PriceOverArea) } </td>
-					<td>{ formatters.FormatInt(x.Rooms) }</td>
-					<td>{ formatters.FormatInt(x.Year) }</td>
+					<td class="address" title={ x.Address }>
+						<a href={ templ.URL(x.Url) }>{ x.Address }</a>
+					</td>
+					<td class="right-align">{ formatters.FormatPrice(x.Price) }</td>
+					<td class="right-align">{ formatters.FormatInt(x.Size.Value) } { x.Size.Unit }</td>
+					<td class="right-align">{ formatters.FormatPrice(x.PriceOverArea) } </td>
+					<td class="right-align">{ formatters.FormatInt(x.Rooms) }</td>
+					<td class="right-align">{ formatters.FormatInt(x.Year) }</td>
 					<td>{ formatters.FormatPrevPrice(x.PriceHistory) }</td>
-					<td>{ formatters.FormatDate(x.FirstSeen) }</td>
+					<td class="right-align">{ formatters.FormatDate(x.FirstSeen) }</td>
 					<td>{ x.Agency }</td>
-					<td><a href={ templ.URL(x.Url) }>{ x.Url }</a></td>
 				</tr>
 			}
 		</tbody>

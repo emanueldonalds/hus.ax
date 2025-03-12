@@ -3,6 +3,8 @@ package formatters
 import (
 	"fmt"
 	"github.com/emanueldonalds/property-viewer/db"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 	"strconv"
 	"strings"
 	"time"
@@ -27,7 +29,8 @@ func FormatPrice(value int) string {
 	if value <= 0 {
 		return ""
 	}
-	return FormatInt(value) + " €"
+	var res = message.NewPrinter(language.Swedish).Sprintf("%d €", value)
+	return res
 }
 
 func FormatInt(value int) string {
@@ -97,5 +100,5 @@ func FormatPrevPrice(priceHistory []db.PriceChange) string {
 }
 
 func FormatPriceChange(priceChange db.PriceChange) string {
-	return strings.TrimSpace(fmt.Sprintf("%s € (%s)", FormatInt(priceChange.Price), FormatDate(priceChange.LastSeen)))
+	return strings.TrimSpace(fmt.Sprintf("%s (%s)", FormatPrice(priceChange.Price), FormatDate(priceChange.LastSeen)))
 }
