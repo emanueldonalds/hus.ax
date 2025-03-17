@@ -5,6 +5,7 @@ import (
 	"github.com/emanueldonalds/property-viewer/db"
 	"github.com/emanueldonalds/property-viewer/rss"
 	"github.com/emanueldonalds/property-viewer/web"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
@@ -22,16 +23,18 @@ func main() {
 		panic("Missing permissions to read assets")
 	}
 
-	mux := http.NewServeMux()
+	router := mux.NewRouter()
+
 	fs := http.FileServer(http.Dir(assetsDir))
 	db := db.GetDb()
 
-	mux.Handle("/assets/", http.StripPrefix("/assets/", fs))
+	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", fs))
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { web.IndexHandler(w, r, db) })
-	mux.HandleFunc("/filter", func(w http.ResponseWriter, r *http.Request) { web.FilterHandler(w, r, db) })
-	mux.HandleFunc("/rss", func(w http.ResponseWriter, r *http.Request) { rss.RssHandler(w, r, db) })
+	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { web.IndexHandler(w, r, db) })
+	router.HandleFunc("/stats/{id}", web.StatsHandler(db))
+	router.HandleFunc("/filter", func(w http.ResponseWriter, r *http.Request) { web.FilterHandler(w, r, db) })
+	router.HandleFunc("/rss", func(w http.ResponseWriter, r *http.Request) { rss.RssHandler(w, r, db) })
 
 	fmt.Println("Listening on :4932")
-	log.Fatal(http.ListenAndServe(":4932", mux))
+	log.Fatal(http.ListenAndServe(":4932", router))
 }

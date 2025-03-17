@@ -2,6 +2,8 @@ package web
 
 import (
 	"database/sql"
+	"fmt"
+	"github.com/gorilla/mux"
 	"net/http"
 
 	"github.com/emanueldonalds/property-viewer/db"
@@ -21,3 +23,17 @@ func FilterHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
 	index.Render(r.Context(), w)
 }
 
+func StatsHandler(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		params := mux.Vars(r)
+        id := params["id"]
+		fmt.Println("Param id is ")
+		fmt.Println(id)
+
+
+        listing := db.GetListing(id);
+
+
+		fmt.Fprintf(w, "Stats\n%s", params["id"])
+	}
+}

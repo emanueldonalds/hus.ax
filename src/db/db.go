@@ -35,24 +35,7 @@ func GetDb() *sql.DB {
 	return db
 }
 
-func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
-	agency := r.URL.Query().Get("agency")
-	qPriceMin := r.URL.Query().Get("price_min")
-	qPriceMax := r.URL.Query().Get("price_max")
-	qYearMin := r.URL.Query().Get("build_year_min")
-	qYearMax := r.URL.Query().Get("build_year_max")
-	qSizeMin := r.URL.Query().Get("size_value_min")
-	qSizeMax := r.URL.Query().Get("size_value_max")
-	qPriceOverAreaMin := r.URL.Query().Get("price_over_area_min")
-	qPriceOverAreaMax := r.URL.Query().Get("price_over_area_max")
-	qRoomsMin := r.URL.Query().Get("rooms_min")
-	qRoomsMax := r.URL.Query().Get("rooms_max")
-	qFirstSeenMin := r.URL.Query().Get("first_seen_min")
-	qLastSeen := r.URL.Query().Get("last_seen")
-
-	qOrderBy := r.URL.Query().Get("order_by")
-	qSortOrder := r.URL.Query().Get("sort_order")
-	qIncludeDeleted := r.URL.Query().Get("include_deleted")
+func GetListing(id int, sqldb *sql.DB) Listing {
 
 	query, err := sqldb.Query(
 		"SELECT "+
@@ -71,71 +54,45 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 			"url, "+
 			"deleted = 1 "+
 			"FROM listing "+
-			"WHERE "+
-			ResolveDeleted(qIncludeDeleted)+
-			"AND agency = COALESCE(NULLIF(?, ''), agency) "+
-			"AND (listing.price IS NULL OR listing.price >= COALESCE(NULLIF(?, ''), listing.price-1)) "+
-			"AND (listing.price IS NULL OR listing.price <= COALESCE(NULLIF(?, ''), listing.price+1)) "+
-			"AND (build_year IS NULL OR build_year >= COALESCE(NULLIF(?, ''), build_year-1)) "+
-			"AND (build_year IS NULL OR build_year <= COALESCE(NULLIF(?, ''), build_year+1)) "+
-			"AND (size_value IS NULL OR size_value >= COALESCE(NULLIF(?, ''), size_value-1)) "+
-			"AND (size_value IS NULL OR size_value <= COALESCE(NULLIF(?, ''), size_value+1)) "+
-			"AND (rooms IS NULL OR rooms >= COALESCE(NULLIF(?, ''), rooms-1)) "+
-			"AND (rooms IS NULL OR rooms <= COALESCE(NULLIF(?, ''), rooms+1)) "+
-			"AND first_seen >= COALESCE(NULLIF(?, ''), first_seen) "+
-			"AND listing.last_seen <= COALESCE(NULLIF(?, ''), listing.last_seen ) "+
-			"HAVING (price_over_area IS NULL OR price_over_area >= COALESCE(NULLIF(?, ''), price_over_area-1)) "+
-			"AND (price_over_area IS NULL OR price_over_area <= COALESCE(NULLIF(?, ''), price_over_area+1)) "+
-			ResolveOrder(qOrderBy, qSortOrder),
-		agency,
-		qPriceMin,
-		qPriceMax,
-		qYearMin,
-		qYearMax,
-		qSizeMin,
-		qSizeMax,
-		qRoomsMin,
-		qRoomsMax,
-		qFirstSeenMin,
-		qLastSeen,
-		qPriceOverAreaMin,
-		qPriceOverAreaMax,
+			"WHERE id = ?",
+		id,
 	)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	listings := []Listing{}
+	query.Next()
 
-	for query.Next() {
-		var rowListing Listing
+		var listing Listing
 		err := query.Scan(
-			&rowListing.Id,
-			&rowListing.Address,
-			&rowListing.Price,
-			&rowListing.Year,
-			&rowListing.Size.Value,
-			&rowListing.Size.Unit,
-			&rowListing.PriceOverArea,
-			&rowListing.Rooms,
-			&rowListing.FirstSeen,
-			&rowListing.LastSeen,
-			&rowListing.LastUpdated,
-			&rowListing.Agency,
-			&rowListing.Url,
-			&rowListing.Deleted)
+			&listing.Id,
+			&listing.Address,
+			&listing.Price,
+			&listing.Year,
+			&listing.Size.Value,
+			&listing.Size.Unit,
+			&listing.PriceOverArea,
+			&listing.Rooms,
+			&listing.FirstSeen,
+			&listing.LastSeen,
+			&listing.LastUpdated,
+			&listing.Agency,
+			&listing.Url,
+			&listing.Deleted)
 
 		if err != nil {
 			panic(err.Error())
 		}
 
-		listings = append(listings, rowListing)
-	}
-
 	query.Close()
 
-	priceChanges := GetPriceChanges(listings, sqldb)
+	if err != nil {
+		panic(sErr.Error())
+	}
+
+
+	priceChanges := GetPriceChanges([]Listings{listing}, sqldb)
 
 	// Add price changes to listings
 	for _, priceChange := range priceChanges {
@@ -147,6 +104,9 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 	}
 
 	return listings
+}
+
+func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 
 }
 

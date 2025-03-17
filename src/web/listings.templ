@@ -36,6 +36,7 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 				<th><a class="sortable" onclick="sort('first_seen')">Upptäckt</a></th>
 				<th><a class="sortable right-align" onclick="sort('agency')">Mäklare</a></th>
 				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -52,6 +53,7 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 					<td>{ formatters.FormatPrevPrice(x.PriceHistory) }</td>
 					<td class="right-align">{ formatters.FormatDate(x.FirstSeen) }</td>
 					<td>{ x.Agency }</td>
+					<td><a href={ templ.URL("stats/" + x.Id) }>~^</a></td>
 					<td></td>
 				</tr>
 			}
