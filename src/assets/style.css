@@ -1,13 +1,15 @@
 html {
     box-sizing: border-box;
+    font-size: 12px;
+    font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', sans-serif;
 }
 
 body {
-    font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', sans-serif;
-    font-size: 8px;
     width: 100%;
     display: flex;
     align-content: stretch;
+    padding-left: 1rem;
+    padding-right: 1rem;
 }
 
 *,
@@ -17,19 +19,19 @@ body {
 }
 
 @media (min-width: 1024px) {
-    body {
+    html {
         font-size: 14px;
     }
 }
 
 @media (min-width: 2000px) {
-    body {
+    html {
         font-size: 18px;
     }
 }
 
 @media (min-width: 3000px) {
-    body {
+    html {
         font-size: 36px;
     }
 }
@@ -40,19 +42,19 @@ body {
 
 #logo-container {
     display: flex;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.5rem;
 }
 
 img {
-    max-width: 5em;
+    max-width: 5rem;
     height: auto;
 }
 
 #logo-text {
     margin-top: auto;
     margin-bottom: 0;
-    margin-left: 0.2em;
-    font-size: 1.5em;
+    margin-left: 0.2rem;
+    font-size: 1.5rem;
 }
 
 h2,
@@ -60,35 +62,35 @@ h3,
 h4,
 h5 {
     font-family: 'Arial', sans-serif;
-    margin-bottom: 0.2em;
+    margin-bottom: 0.2rem;
 }
 
 #filters {
-    width: 12em;
-    margin-bottom: 2em;
-    margin-right: 1em;
+    width: 12rem;
+    margin-bottom: 2rem;
+    margin-right: 1rem;
     display: flex;
     flex-direction: column;
 }
 
 
 #metadata {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
 }
 
 #listings {
     width: 100%;
-    font-size: 0.9em;
+    font-size: 0.9rem;
 }
 
 label {
     white-space: nowrap;
-    min-width: 5em;
+    min-width: 5rem;
 }
 
 .input-group {
-    margin-bottom: 1em;
+    margin-bottom: 1rem;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -97,10 +99,10 @@ label {
 
 input,
 select {
-    height: 1.8em;
-    font-size: 0.8em;
+    height: 1.8rem;
+    font-size: 0.8rem;
     border: 1px solid #e3e3e3;
-    border-radius: 0.15em;
+    border-radius: 0.15rem;
     background-color: white;
 }
 
@@ -124,8 +126,8 @@ input[type=number] {
 }
 
 .input-field {
-    margin-right: 0.1em;
-    margin-left: 0.1em;
+    margin-right: 0.1rem;
+    margin-left: 0.1rem;
     width: 100%;
 }
 
@@ -138,12 +140,12 @@ button {
     background-color: white;
     color: black;
     border: 1px solid #e3e3e3;
-    padding: 0.5em;
+    padding: 0.5rem;
     margin-top: 0;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 0.8em;
+    font-size: 0.8rem;
 }
 
 button:hover {
@@ -152,10 +154,10 @@ button:hover {
 }
 
 table {
-    width: 100%;
+    /*width: 100%;*/
     border-top: 1px solid #EFEFEF;
     border-spacing: 0px 0px;
-    padding-top: 0.5em;
+    padding-top: 0.5rem;
 }
 
 thead {
@@ -165,43 +167,49 @@ thead {
     top: 0;
     z-index: 1;
     background: #fff;
-    font-size: 1.2em;
+    font-size: 1.2rem;
+    text-align: left;
 }
 
 th,
 td {
-    text-align: left;
     white-space: nowrap;
-    overflow: hidden;
-    padding-left: 0.5em;
-    padding-top: 0.2em;
-    padding-bottom: 0.2em;
+
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
 }
 
 th:first-child,
 td:first-child {
-    padding-left: 0.2em;
+    padding-left: 0.2rem;
 }
 
 th:last-child,
 td:last-child {
-    padding-right: 0.2em;
+    padding-right: 0.2rem;
+    width: 100%;
 }
 
 tr:nth-child(even) {
-    background-color: #EAEAEA;
+    background-color: rgba(74, 111, 167, 0.05);
 }
 
 .address {
-    width: 16rem;
+    min-width: 16rem;
+    max-width: 16rem;
+    white-space: wrap;
 }
-
-
 
 .right-align {
     text-align: right;
-    padding-right: 1em;
-    width: 4em;
+}
+
+th .right-align {
+    display: inline-block;
+    width: 100%;
 }
 
 .sortable {
@@ -218,6 +226,15 @@ tr:nth-child(even) {
     cursor: pointer;
 }
 
-.disabled {
+a {
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.disabled, .disabled a {
     color: gray;
 }
+

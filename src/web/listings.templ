@@ -27,14 +27,15 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 		<thead>
 			<tr>
 				<th><a class="sortable" onclick="sort('address')">Adress</a></th>
-				<th><a class="sortable" onclick="sort('price')">Pris</a></th>
-				<th><a class="sortable" onclick="sort('size_value')">Area</a></th>
-				<th><a class="sortable" onclick="sort('price_over_area')">Pris/m2</a></th>
-				<th><a class="sortable" onclick="sort('rooms')">Antal rum</a></th>
-				<th><a class="sortable" onclick="sort('build_year')">Årtal</a></th>
+				<th><a class="sortable right-align" onclick="sort('price')">Pris</a></th>
+				<th><a class="sortable right-align" onclick="sort('size_value')">Area</a></th>
+				<th><a class="sortable right-align" onclick="sort('price_over_area')">Pris/m2</a></th>
+				<th><a class="sortable right-align" onclick="sort('rooms')">Rum</a></th>
+				<th><a class="sortable right-align" onclick="sort('build_year')">Årtal</a></th>
 				<th>Tidigare pris</th>
 				<th><a class="sortable" onclick="sort('first_seen')">Upptäckt</a></th>
-				<th><a class="sortable" onclick="sort('agency')">Mäklare</a></th>
+				<th><a class="sortable right-align" onclick="sort('agency')">Mäklare</a></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -51,6 +52,7 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 					<td>{ formatters.FormatPrevPrice(x.PriceHistory) }</td>
 					<td class="right-align">{ formatters.FormatDate(x.FirstSeen) }</td>
 					<td>{ x.Agency }</td>
+					<td></td>
 				</tr>
 			}
 		</tbody>
