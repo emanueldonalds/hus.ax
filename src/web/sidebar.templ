@@ -4,11 +4,13 @@ templ Sidebar(contents templ.Component) {
 	<div id="sidebar">
 		<div id="heading">
 			<div id="logo-container">
-				<img src="/assets/logo.png" alt="Page logo"/>
-				<h1 id="logo-text">Hus.ax</h1>
+				<a href="/">
+					<img src="/assets/logo.png" alt="Page logo"/>
+					<h1 id="logo-text">Hus.ax</h1>
+				</a>
 			</div>
 			<small>Fastigheter på Åland</small>
-			@contents
 		</div>
+		@contents
 	</div>
 }

@@ -3,11 +3,12 @@ package db
 import (
 	"database/sql"
 	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 	"net/http"
 	"os"
 	"slices"
 	"strings"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 const listingFields = "listing.id, " +
@@ -69,9 +70,27 @@ func GetListing(id int, sqldb *sql.DB) Listing {
 
 	priceChanges := GetPriceChanges([]Listing{listing}, sqldb)
 
-	for _, priceChange := range priceChanges {
+    for i:=range len(priceChanges)-1 {
+        priceChange := priceChanges[i]
+
+        if (i < len(priceChanges)) {
+            previousPriceChange := priceChanges[i+ 1]
+            priceChange.FirstSeen = previousPriceChange.LastSeen;
+            priceChange.PreviousPrice = previousPriceChange.Price;
+        }
+
 		listing.PriceHistory = append(listing.PriceHistory, priceChange)
 	}
+
+    // Add the current price as the final price change
+    lastPriceChange := priceChanges[len(priceChanges)-1]
+
+    currentPrice := new(PriceChange)
+    currentPrice.FirstSeen=  lastPriceChange.LastSeen
+    currentPrice.PreviousPrice = lastPriceChange.Price
+    currentPrice.Price= listing.Price
+
+    listing.PriceHistory = append(listing.PriceHistory, *currentPrice)
 
 	return listing
 }

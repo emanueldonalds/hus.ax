@@ -24,6 +24,8 @@ type Size struct {
 
 type PriceChange struct {
 	LastSeen  string
+    FirstSeen string
+    PreviousPrice int 
 	Price     int
 	ListingId string
 }

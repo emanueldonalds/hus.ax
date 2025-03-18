@@ -1,11 +1,10 @@
 html {
     box-sizing: border-box;
-    font-size: 12px;
+    font-size: 16px;
     font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', sans-serif;
 }
 
 body {
-    width: 100%;
     display: flex;
     align-content: stretch;
     padding-left: 1rem;
@@ -20,24 +19,32 @@ body {
 
 @media (min-width: 1024px) {
     html {
-        font-size: 14px;
+        font-size: 18px;
     }
 }
 
 @media (min-width: 2000px) {
     html {
-        font-size: 18px;
+        font-size: 22px;
     }
 }
 
 @media (min-width: 3000px) {
     html {
-        font-size: 36px;
+        font-size: 40px;
     }
 }
 
 #heading {
     margin-bottom: 1.5rem;
+}
+
+#heading a {
+    display: flex;
+    color: black;
+    text-decoration: none;
+    white-space: nowrap;
+
 }
 
 #logo-container {
@@ -167,8 +174,11 @@ thead {
     top: 0;
     z-index: 1;
     background: #fff;
-    font-size: 1.2rem;
     text-align: left;
+}
+
+#listings thead {
+    font-size: 1.2rem;
 }
 
 th,
@@ -182,13 +192,13 @@ td {
     padding-bottom: 0.2rem;
 }
 
-th:first-child,
-td:first-child {
+#listings th:first-child,
+#listingstd:first-child {
     padding-left: 0.2rem;
 }
 
-th:last-child,
-td:last-child {
+#listings th:last-child,
+#listings td:last-child {
     padding-right: 0.2rem;
     width: 100%;
 }
@@ -198,9 +208,13 @@ tr:nth-child(even) {
 }
 
 .address {
-    min-width: 18rem;
-    max-width: 18rem;
+    min-width: 16rem;
+    max-width: 16rem;
     white-space: wrap;
+}
+
+#listings th {
+    text-align: left;
 }
 
 .right-align {
@@ -236,5 +250,21 @@ a:hover {
 
 .disabled, .disabled a {
     color: gray;
+}
+
+
+/* Listing info */
+
+#listing-info {
+    padding-left: 2rem;
+}
+
+#listing-info table {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+#listing-info-table th {
+    text-align: right;
 }
 

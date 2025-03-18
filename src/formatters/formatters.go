@@ -102,3 +102,11 @@ func FormatPrevPrice(priceHistory []db.PriceChange) string {
 func FormatPriceChange(priceChange db.PriceChange) string {
 	return strings.TrimSpace(fmt.Sprintf("%s (%s)", FormatPrice(priceChange.Price), FormatDate(priceChange.LastSeen)))
 }
+
+func FormatBool(value bool) string {
+  if (value == true) {
+      return "Ja"
+  } else {
+      return "Nej"
+  }
+}

@@ -3,8 +3,8 @@ package web
 import "github.com/emanueldonalds/property-viewer/db"
 
 templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
-    @Layout(filters(), Listings(listings, lastScrape))
-	<script src="/assets/script.js"></script>
+	@Layout(filters(), Listings(listings, lastScrape))
+	<script src="/assets/index.js"></script>
 }
 
 templ filters() {
@@ -20,7 +20,6 @@ templ filters() {
 		<button id="send" type="submit">Filtrera</button>
 	</form>
 }
-
 
 templ inputRange(minId string, maxId string, title string) {
 	<div class="input-group">
