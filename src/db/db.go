@@ -10,6 +10,21 @@ import (
 	"strings"
 )
 
+const listingFields = "listing.id, " +
+	"IFNULL(address, \"\"), " +
+	"IFNULL(listing.price, -1), " +
+	"IFNULL(build_year, -1), " +
+	"FLOOR(IFNULL(size_value, -1)), " +
+	"IFNULL(size_name, \"\")," +
+	"IFNULL(FLOOR(listing.price/size_value), -1) as price_over_area, " +
+	"IFNULL(rooms, -1), " +
+	"first_seen, " +
+	"listing.last_seen, " +
+	"IFNULL(listing.last_updated, listing.last_seen), " +
+	"agency, " +
+	"url, " +
+	"deleted = 1 "
+
 func GetDb() *sql.DB {
 	dbHost := os.Getenv("PROPERTY_VIEWER_DB_HOST")
 	dbPass := os.Getenv("PROPERTY_VIEWER_DB_PASSWORD")
@@ -36,25 +51,8 @@ func GetDb() *sql.DB {
 }
 
 func GetListing(id int, sqldb *sql.DB) Listing {
-
 	query, err := sqldb.Query(
-		"SELECT "+
-			"listing.id, "+
-			"IFNULL(address, \"\"), "+
-			"IFNULL(listing.price, -1), "+
-			"IFNULL(build_year, -1), "+
-			"FLOOR(IFNULL(size_value, -1)), "+
-			"IFNULL(size_name, \"\"),"+
-			"IFNULL(FLOOR(listing.price/size_value), -1) as price_over_area, "+
-			"IFNULL(rooms, -1), "+
-			"first_seen, "+
-			"listing.last_seen, "+
-			"IFNULL(listing.last_updated, listing.last_seen), "+
-			"agency, "+
-			"url, "+
-			"deleted = 1 "+
-			"FROM listing "+
-			"WHERE id = ?",
+		"SELECT "+listingFields+" FROM listing WHERE id = ?",
 		id,
 	)
 
@@ -64,77 +62,28 @@ func GetListing(id int, sqldb *sql.DB) Listing {
 
 	query.Next()
 
-    var listing Listing
-    err = query.Scan(
-        &listing.Id,
-        &listing.Address,
-        &listing.Price,
-        &listing.Year,
-        &listing.Size.Value,
-        &listing.Size.Unit,
-        &listing.PriceOverArea,
-        &listing.Rooms,
-        &listing.FirstSeen,
-        &listing.LastSeen,
-        &listing.LastUpdated,
-        &listing.Agency,
-        &listing.Url,
-        &listing.Deleted)
+	var listing Listing
+	scanListing(query, &listing)
 
 	query.Close()
-
-	if err != nil {
-		panic(err.Error())
-	}
-
 
 	priceChanges := GetPriceChanges([]Listing{listing}, sqldb)
 
 	for _, priceChange := range priceChanges {
-        listing.PriceHistory = append(listing.PriceHistory, priceChange)
+		listing.PriceHistory = append(listing.PriceHistory, priceChange)
 	}
 
 	return listing
 }
 
 func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
-	agency := r.URL.Query().Get("agency")
-	qPriceMin := r.URL.Query().Get("price_min")
-	qPriceMax := r.URL.Query().Get("price_max")
-	qYearMin := r.URL.Query().Get("build_year_min")
-	qYearMax := r.URL.Query().Get("build_year_max")
-	qSizeMin := r.URL.Query().Get("size_value_min")
-	qSizeMax := r.URL.Query().Get("size_value_max")
-	qPriceOverAreaMin := r.URL.Query().Get("price_over_area_min")
-	qPriceOverAreaMax := r.URL.Query().Get("price_over_area_max")
-	qRoomsMin := r.URL.Query().Get("rooms_min")
-	qRoomsMax := r.URL.Query().Get("rooms_max")
-	qFirstSeenMin := r.URL.Query().Get("first_seen_min")
-	qLastSeen := r.URL.Query().Get("last_seen")
-
 	qOrderBy := r.URL.Query().Get("order_by")
 	qSortOrder := r.URL.Query().Get("sort_order")
 	qIncludeDeleted := r.URL.Query().Get("include_deleted")
 
 	query, err := sqldb.Query(
-		"SELECT "+
-			"listing.id, "+
-			"IFNULL(address, \"\"), "+
-			"IFNULL(listing.price, -1), "+
-			"IFNULL(build_year, -1), "+
-			"FLOOR(IFNULL(size_value, -1)), "+
-			"IFNULL(size_name, \"\"),"+
-			"IFNULL(FLOOR(listing.price/size_value), -1) as price_over_area, "+
-			"IFNULL(rooms, -1), "+
-			"first_seen, "+
-			"listing.last_seen, "+
-			"IFNULL(listing.last_updated, listing.last_seen), "+
-			"agency, "+
-			"url, "+
-			"deleted = 1 "+
-			"FROM listing "+
-			"WHERE "+
-			ResolveDeleted(qIncludeDeleted)+
+		"SELECT "+listingFields+"FROM listing WHERE "+
+			deletedIn(qIncludeDeleted)+
 			"AND agency = COALESCE(NULLIF(?, ''), agency) "+
 			"AND (listing.price IS NULL OR listing.price >= COALESCE(NULLIF(?, ''), listing.price-1)) "+
 			"AND (listing.price IS NULL OR listing.price <= COALESCE(NULLIF(?, ''), listing.price+1)) "+
@@ -148,20 +97,20 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 			"AND listing.last_seen <= COALESCE(NULLIF(?, ''), listing.last_seen ) "+
 			"HAVING (price_over_area IS NULL OR price_over_area >= COALESCE(NULLIF(?, ''), price_over_area-1)) "+
 			"AND (price_over_area IS NULL OR price_over_area <= COALESCE(NULLIF(?, ''), price_over_area+1)) "+
-			ResolveOrder(qOrderBy, qSortOrder),
-		agency,
-		qPriceMin,
-		qPriceMax,
-		qYearMin,
-		qYearMax,
-		qSizeMin,
-		qSizeMax,
-		qRoomsMin,
-		qRoomsMax,
-		qFirstSeenMin,
-		qLastSeen,
-		qPriceOverAreaMin,
-		qPriceOverAreaMax,
+			orderBy(qOrderBy, qSortOrder),
+		r.URL.Query().Get("agency"),
+		r.URL.Query().Get("price_min"),
+		r.URL.Query().Get("price_max"),
+		r.URL.Query().Get("build_year_min"),
+		r.URL.Query().Get("build_year_max"),
+		r.URL.Query().Get("size_value_min"),
+		r.URL.Query().Get("size_value_max"),
+		r.URL.Query().Get("price_over_area_min"),
+		r.URL.Query().Get("price_over_area_max"),
+		r.URL.Query().Get("rooms_min"),
+		r.URL.Query().Get("rooms_max"),
+		r.URL.Query().Get("first_seen_min"),
+		r.URL.Query().Get("last_seen"),
 	)
 
 	if err != nil {
@@ -172,26 +121,7 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 
 	for query.Next() {
 		var rowListing Listing
-		err := query.Scan(
-			&rowListing.Id,
-			&rowListing.Address,
-			&rowListing.Price,
-			&rowListing.Year,
-			&rowListing.Size.Value,
-			&rowListing.Size.Unit,
-			&rowListing.PriceOverArea,
-			&rowListing.Rooms,
-			&rowListing.FirstSeen,
-			&rowListing.LastSeen,
-			&rowListing.LastUpdated,
-			&rowListing.Agency,
-			&rowListing.Url,
-			&rowListing.Deleted)
-
-		if err != nil {
-			panic(err.Error())
-		}
-
+		scanListing(query, &rowListing)
 		listings = append(listings, rowListing)
 	}
 
@@ -267,7 +197,7 @@ func GetLastScrape(sqldb *sql.DB) ScrapeEvent {
 	return scrapeEvent
 }
 
-func ResolveOrder(qOrderBy string, qSortOrder string) string {
+func orderBy(qOrderBy string, qSortOrder string) string {
 	if qOrderBy == "" {
 		return "ORDER BY first_seen desc"
 	}
@@ -301,7 +231,7 @@ func ResolveOrder(qOrderBy string, qSortOrder string) string {
 	return fmt.Sprintf("ORDER BY %s %s", orderBy, qSortOrder)
 }
 
-func ResolveDeleted(qIncludeDeleted string) string {
+func deletedIn(qIncludeDeleted string) string {
 	if qIncludeDeleted == "" {
 		return "deleted = false "
 	}
@@ -310,4 +240,26 @@ func ResolveDeleted(qIncludeDeleted string) string {
 	}
 
 	panic("Invalid include deleted value " + qIncludeDeleted)
+}
+
+func scanListing(query *sql.Rows, listing *Listing) {
+	err := query.Scan(
+		&listing.Id,
+		&listing.Address,
+		&listing.Price,
+		&listing.Year,
+		&listing.Size.Value,
+		&listing.Size.Unit,
+		&listing.PriceOverArea,
+		&listing.Rooms,
+		&listing.FirstSeen,
+		&listing.LastSeen,
+		&listing.LastUpdated,
+		&listing.Agency,
+		&listing.Url,
+		&listing.Deleted)
+
+	if err != nil {
+		panic(err.Error())
+	}
 }
