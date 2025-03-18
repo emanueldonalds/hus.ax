@@ -14,49 +14,51 @@ func getRowClass(deleted bool) string {
 }
 
 templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
-	<div id="metadata">
-		Rader: { strconv.Itoa(len(listings)) }
-		&emsp;
-		Uppdaterad: { formatters.FormatDateTime(lastScrape.Date) }
-		&emsp;
-		<a href="https://github.com/emanueldonalds/property-viewer">Källkod</a>
-		&emsp;
-		<a href="/rss">RSS-flöde</a>
-	</div>
-	<table id="listings-table">
-		<thead>
-			<tr>
-				<th><a class="sortable" onclick="sort('address')">Adress</a></th>
-				<th><a class="sortable right-align" onclick="sort('price')">Pris</a></th>
-				<th><a class="sortable right-align" onclick="sort('size_value')">Area</a></th>
-				<th><a class="sortable right-align" onclick="sort('price_over_area')">Pris/m2</a></th>
-				<th><a class="sortable right-align" onclick="sort('rooms')">Rum</a></th>
-				<th><a class="sortable right-align" onclick="sort('build_year')">Årtal</a></th>
-				<th>Tidigare pris</th>
-				<th><a class="sortable" onclick="sort('first_seen')">Upptäckt</a></th>
-				<th><a class="sortable right-align" onclick="sort('agency')">Mäklare</a></th>
-				<th></th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			for _, x := range listings {
-				<tr class={ getRowClass(x.Deleted) }>
-					<td class="address" title={ x.Address }>
-						<a href={ templ.URL(x.Url) }>{ x.Address }</a>
-					</td>
-					<td class="right-align">{ formatters.FormatPrice(x.Price) }</td>
-					<td class="right-align">{ formatters.FormatInt(x.Size.Value) } { x.Size.Unit }</td>
-					<td class="right-align">{ formatters.FormatPrice(x.PriceOverArea) } </td>
-					<td class="right-align">{ formatters.FormatInt(x.Rooms) }</td>
-					<td class="right-align">{ formatters.FormatInt(x.Year) }</td>
-					<td>{ formatters.FormatPrevPrice(x.PriceHistory) }</td>
-					<td class="right-align">{ formatters.FormatDate(x.FirstSeen) }</td>
-					<td>{ x.Agency }</td>
-					<td><a href={ templ.URL("stats/" + x.Id) }>~^</a></td>
-					<td></td>
+	<div id="listings">
+		<div id="metadata">
+			Rader: { strconv.Itoa(len(listings)) }
+			&emsp;
+			Uppdaterad: { formatters.FormatDateTime(lastScrape.Date) }
+			&emsp;
+			<a href="https://github.com/emanueldonalds/property-viewer">Källkod</a>
+			&emsp;
+			<a href="/rss">RSS-flöde</a>
+		</div>
+		<table id="listings-table">
+			<thead>
+				<tr>
+					<th><a class="sortable" onclick="sort('address')">Adress</a></th>
+					<th><a class="sortable right-align" onclick="sort('price')">Pris</a></th>
+					<th><a class="sortable right-align" onclick="sort('size_value')">Area</a></th>
+					<th><a class="sortable right-align" onclick="sort('price_over_area')">Pris/m2</a></th>
+					<th><a class="sortable right-align" onclick="sort('rooms')">Rum</a></th>
+					<th><a class="sortable right-align" onclick="sort('build_year')">Årtal</a></th>
+					<th>Tidigare pris</th>
+					<th><a class="sortable" onclick="sort('first_seen')">Upptäckt</a></th>
+					<th><a class="sortable right-align" onclick="sort('agency')">Mäklare</a></th>
+					<th></th>
+					<th></th>
 				</tr>
-			}
-		</tbody>
-	</table>
+			</thead>
+			<tbody>
+				for _, x := range listings {
+					<tr class={ getRowClass(x.Deleted) }>
+						<td class="address" title={ x.Address }>
+							<a href={ templ.URL(x.Url) }>{ x.Address }</a>
+						</td>
+						<td class="right-align">{ formatters.FormatPrice(x.Price) }</td>
+						<td class="right-align">{ formatters.FormatInt(x.Size.Value) } { x.Size.Unit }</td>
+						<td class="right-align">{ formatters.FormatPrice(x.PriceOverArea) } </td>
+						<td class="right-align">{ formatters.FormatInt(x.Rooms) }</td>
+						<td class="right-align">{ formatters.FormatInt(x.Year) }</td>
+						<td>{ formatters.FormatPrevPrice(x.PriceHistory) }</td>
+						<td class="right-align">{ formatters.FormatDate(x.FirstSeen) }</td>
+						<td>{ x.Agency }</td>
+						<td><a href={ templ.URL("stats/" + x.Id) }>~^</a></td>
+						<td></td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
 }

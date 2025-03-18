@@ -3,63 +3,24 @@ package web
 import "github.com/emanueldonalds/property-viewer/db"
 
 templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
-	<!DOCTYPE html>
-	<html lang="sv">
-		<head>
-			<meta charset="utf-8"/>
-			<title>Fastigheter på Åland</title>
-			<meta name="description" content="Tydlig översikt av fastighetsannonser på Åland, med filtrering och RSS-flöde."/>
-			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<link rel="alternate" type="application/rss+xml" title="RSS feed" href="/rss"/>
-			<link rel="icon" type="image/x-icon" sizes="48x48" href="/assets/favicon.ico"/>
-			<link rel="icon" type="image/png" sizes="16x16" href="/assets/icon-16x16.png"/>
-			<link rel="icon" type="image/png" sizes="24x24" href="/assets/icon-24x24.png"/>
-			<link rel="icon" type="image/png" sizes="32x32" href="/assets/icon-32x32.png"/>
-			<link rel="icon" type="image/png" sizes="48x48" href="/assets/icon-48x48.png"/>
-			<link rel="icon" type="image/png" sizes="96x96" href="/assets/icon-96x96.png"/>
-			<link rel="icon" type="image/png" sizes="128x128" href="/assets/icon-128x128.png"/>
-			<link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192x192.png"/>
-			<link rel="icon" type="image/png" sizes="256x256" href="/assets/icon-256x256.png"/>
-			<link rel="icon" type="image/png" sizes="512x512" href="/assets/icon-512x512.png"/>
-			<link rel="icon" type="image/png" sizes="1024x1024" href="/assets/icon-1024x1024.png"/>
-			<link rel="apple-touch-icon" type="image/png" sizes="57x57" href="/assets/icon-57x57.png"/>
-			<link rel="apple-touch-icon" type="image/png" sizes="114x114" href="/assets/icon-114x114.png"/>
-			<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/assets/icon-180x180.png"/>
-			<script src="/assets/htmx.min.js"></script>
-			<link href="/assets/style.css" rel="stylesheet"/>
-            <script defer data-domain="hus.ax" src="https://analytics.edonalds.com/js/script.outbound-links.js"></script>
-		</head>
-		<body>
-			<div id="sidebar">
-				<div id="heading">
-					<div id="logo-container">
-						<img src="/assets/logo.png" alt="Page logo"/>
-						<h1 id="logo-text">Hus.ax</h1>
-					</div>
-					<small>Fastigheter på Åland</small>
-				</div>
-				<form id="filters" hx-get="/filter" hx-target="#listings" hx-trigger="change, submit">
-					@inputRange("price_min", "price_max", "Pris")
-					@inputRange("build_year_min", "build_year_max", "År")
-					@inputRange("size_value_min", "size_value_max", "Area")
-					@inputRange("price_over_area_min", "price_over_area_max", "Pris/m2")
-					@inputAgency()
-					@inputIncludeDeleted()
-					<input type="hidden" id="order_by" name="order_by"/>
-					<input type="hidden" id="sort_order" name="sort_order"/>
-					<button id="send" type="submit">Filtrera</button>
-				</form>
-				<div id="about" class="about">
-					<p></p>
-				</div>
-			</div>
-			<div id="listings">
-				@Listings(listings, lastScrape)
-			</div>
-			<script src="/assets/script.js"></script>
-		</body>
-	</html>
+    @Layout(filters(), Listings(listings, lastScrape))
+	<script src="/assets/script.js"></script>
 }
+
+templ filters() {
+	<form id="filters" hx-get="/filter" hx-target="#listings" hx-trigger="change, submit">
+		@inputRange("price_min", "price_max", "Pris")
+		@inputRange("build_year_min", "build_year_max", "År")
+		@inputRange("size_value_min", "size_value_max", "Area")
+		@inputRange("price_over_area_min", "price_over_area_max", "Pris/m2")
+		@inputAgency()
+		@inputIncludeDeleted()
+		<input type="hidden" id="order_by" name="order_by"/>
+		<input type="hidden" id="sort_order" name="sort_order"/>
+		<button id="send" type="submit">Filtrera</button>
+	</form>
+}
+
 
 templ inputRange(minId string, maxId string, title string) {
 	<div class="input-group">

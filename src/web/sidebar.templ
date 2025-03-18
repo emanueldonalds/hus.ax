@@ -1,0 +1,14 @@
+package web
+
+templ Sidebar(contents templ.Component) {
+	<div id="sidebar">
+		<div id="heading">
+			<div id="logo-container">
+				<img src="/assets/logo.png" alt="Page logo"/>
+				<h1 id="logo-text">Hus.ax</h1>
+			</div>
+			<small>Fastigheter på Åland</small>
+			@contents
+		</div>
+	</div>
+}
