@@ -1,6 +1,7 @@
 package web
 
 import (
+    "strconv"
 	"database/sql"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -23,15 +24,20 @@ func FilterHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
 	index.Render(r.Context(), w)
 }
 
-func StatsHandler(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+func StatsHandler(sqldb *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
-        id := params["id"]
+        idParam := params["id"]
 		fmt.Println("Param id is ")
-		fmt.Println(id)
+		fmt.Println(idParam)
 
+        id, err := strconv.Atoi(idParam)
 
-        listing := db.GetListing(id);
+        if err != nil {
+            fmt.Printf("Could not convert ID param [%s] to int", idParam)
+        }
+
+        listing := db.GetListing(id, sqldb);
 
         listingPage := Listing(listing)
         listingPage.Render(r.Context(), w)
