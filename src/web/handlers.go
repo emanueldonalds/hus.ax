@@ -33,7 +33,7 @@ func StatsHandler(db *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 
         listing := db.GetListing(id);
 
-
-		fmt.Fprintf(w, "Stats\n%s", params["id"])
+        listingPage := Listing(listing)
+        listingPage.Render(r.Context(), w)
 	}
 }

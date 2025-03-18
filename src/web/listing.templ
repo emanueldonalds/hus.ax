@@ -1,0 +1,11 @@
+package web;
+
+import (
+	"strconv"
+	"github.com/emanueldonalds/property-viewer/db"
+	"github.com/emanueldonalds/property-viewer/formatters"
+)
+
+templ Listing(listing db.Listing) {
+    <p>{ listing.address }</p>
+}

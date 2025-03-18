@@ -64,46 +64,37 @@ func GetListing(id int, sqldb *sql.DB) Listing {
 
 	query.Next()
 
-		var listing Listing
-		err := query.Scan(
-			&listing.Id,
-			&listing.Address,
-			&listing.Price,
-			&listing.Year,
-			&listing.Size.Value,
-			&listing.Size.Unit,
-			&listing.PriceOverArea,
-			&listing.Rooms,
-			&listing.FirstSeen,
-			&listing.LastSeen,
-			&listing.LastUpdated,
-			&listing.Agency,
-			&listing.Url,
-			&listing.Deleted)
-
-		if err != nil {
-			panic(err.Error())
-		}
+    var listing Listing
+    err = query.Scan(
+        &listing.Id,
+        &listing.Address,
+        &listing.Price,
+        &listing.Year,
+        &listing.Size.Value,
+        &listing.Size.Unit,
+        &listing.PriceOverArea,
+        &listing.Rooms,
+        &listing.FirstSeen,
+        &listing.LastSeen,
+        &listing.LastUpdated,
+        &listing.Agency,
+        &listing.Url,
+        &listing.Deleted)
 
 	query.Close()
 
 	if err != nil {
-		panic(sErr.Error())
+		panic(err.Error())
 	}
 
 
-	priceChanges := GetPriceChanges([]Listings{listing}, sqldb)
+	priceChanges := GetPriceChanges([]Listing{listing}, sqldb)
 
-	// Add price changes to listings
 	for _, priceChange := range priceChanges {
-		for i, listing := range listings {
-			if priceChange.ListingId == listing.Id {
-				listings[i].PriceHistory = append(listing.PriceHistory, priceChange)
-			}
-		}
+        listing.PriceHistory = append(listing.PriceHistory, priceChange)
 	}
 
-	return listings
+	return listing
 }
 
 func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
