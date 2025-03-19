@@ -1,9 +1,9 @@
 package web;
 
 import (
-	"strconv"
 	"github.com/emanueldonalds/property-viewer/db"
 	"github.com/emanueldonalds/property-viewer/formatters"
+	"strconv"
 )
 
 func getRowClass(deleted bool) string {
@@ -54,7 +54,7 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 						<td class="right-align">{ formatters.FormatPrevPrice(x.PriceHistory) }</td>
 						<td class="right-align">{ formatters.FormatDate(x.FirstSeen) }</td>
 						<td>{ x.Agency }</td>
-						<td><a href={ templ.URL("stats/" + x.Id) }>~^</a></td>
+						<td><a href={ templ.URL("info/" + x.Id) }>Info</a></td>
 						<td></td>
 					</tr>
 				}

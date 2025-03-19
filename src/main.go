@@ -31,7 +31,7 @@ func main() {
 	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", fs))
 
 	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { web.IndexHandler(w, r, db) })
-	router.HandleFunc("/stats/{id}", web.StatsHandler(db))
+	router.HandleFunc("/info/{id}", web.DetailsHandler(db))
 	router.HandleFunc("/filter", func(w http.ResponseWriter, r *http.Request) { web.FilterHandler(w, r, db) })
 	router.HandleFunc("/rss", func(w http.ResponseWriter, r *http.Request) { rss.RssHandler(w, r, db) })
 

@@ -24,12 +24,10 @@ func FilterHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
 	index.Render(r.Context(), w)
 }
 
-func StatsHandler(sqldb *sql.DB) func(w http.ResponseWriter, r *http.Request) {
+func DetailsHandler(sqldb *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
         idParam := params["id"]
-		fmt.Println("Param id is ")
-		fmt.Println(idParam)
 
         id, err := strconv.Atoi(idParam)
 

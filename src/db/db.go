@@ -70,27 +70,30 @@ func GetListing(id int, sqldb *sql.DB) Listing {
 
 	priceChanges := GetPriceChanges([]Listing{listing}, sqldb)
 
-    for i:=range len(priceChanges)-1 {
-        priceChange := priceChanges[i]
+	if len(priceChanges) > 0 {
+		for i := range len(priceChanges) - 1 {
+			priceChange := priceChanges[i]
 
-        if (i < len(priceChanges)) {
-            previousPriceChange := priceChanges[i+ 1]
-            priceChange.FirstSeen = previousPriceChange.LastSeen;
-            priceChange.PreviousPrice = previousPriceChange.Price;
-        }
+			if i < len(priceChanges) {
+				previousPriceChange := priceChanges[i+1]
+				priceChange.FirstSeen = previousPriceChange.LastSeen
+				priceChange.PreviousPrice = previousPriceChange.Price
+			}
 
-		listing.PriceHistory = append(listing.PriceHistory, priceChange)
+			listing.PriceHistory = append(listing.PriceHistory, priceChange)
+		}
+
+		// Add the current price as the final price change
+
+		lastPriceChange := priceChanges[0]
+
+		currentPrice := new(PriceChange)
+		currentPrice.FirstSeen = lastPriceChange.LastSeen
+		currentPrice.PreviousPrice = lastPriceChange.Price
+		currentPrice.Price = listing.Price
+
+		listing.PriceHistory = append([]PriceChange{*currentPrice}, listing.PriceHistory...)
 	}
-
-    // Add the current price as the final price change
-    lastPriceChange := priceChanges[len(priceChanges)-1]
-
-    currentPrice := new(PriceChange)
-    currentPrice.FirstSeen=  lastPriceChange.LastSeen
-    currentPrice.PreviousPrice = lastPriceChange.Price
-    currentPrice.Price= listing.Price
-
-    listing.PriceHistory = append(listing.PriceHistory, *currentPrice)
 
 	return listing
 }

@@ -10,7 +10,7 @@ templ Listing(listing db.Listing) {
 }
 
 templ sidebar() {
-	<a href="/">Tillbaka</a>
+	<a class="button" onclick="history.back()">&#60; Tillbaka</a>
 }
 
 templ listingInfo(listing db.Listing) {
@@ -20,6 +20,10 @@ templ listingInfo(listing db.Listing) {
 			<tr>
 				<th>URL</th>
 				<td><a href={ templ.URL(listing.Url) }>{ listing.Url }</a> </td>
+			</tr>
+			<tr>
+				<th>Adress</th>
+				<td>{ listing.Address }</td>
 			</tr>
 			<tr>
 				<th>Pris</th>
@@ -64,28 +68,32 @@ templ listingInfo(listing db.Listing) {
 
 templ priceHistory(listing db.Listing) {
 	<div>
-		<h3>Prishistorik</h3>
-		<table>
-			<thead>
-				<tr>
-					<th>
-						Datum
-					</th>
-					<th class="right-align">
-						Från
-					</th>
-					<th class="right-align">
-						Till
-					</th>
-				</tr>
-			</thead>
-			for _, priceChange := range listing.PriceHistory {
-				<tr>
-                    <td>{ formatters.FormatFullDate(priceChange.FirstSeen) } </td>
-					<td class="right-align">{ formatters.FormatPrice(priceChange.PreviousPrice ) }</td>
-					<td class="right-align">{ formatters.FormatPrice(priceChange.Price) }</td>
-				</tr>
-			}
-		</table>
+		if (len(listing.PriceHistory) > 0) {
+			<h3>Prishistorik</h3>
+			<table>
+				<thead>
+					<tr>
+						<th>
+							Datum
+						</th>
+						<th>
+							Från
+						</th>
+						<th>
+							Till
+						</th>
+                        <th> </th>
+					</tr>
+				</thead>
+				for _, priceChange := range listing.PriceHistory {
+					<tr>
+						<td>{ formatters.FormatFullDate(priceChange.FirstSeen) } </td>
+						<td class="right-align">{ formatters.FormatPrice(priceChange.PreviousPrice ) }</td>
+						<td class="right-align">{ formatters.FormatPrice(priceChange.Price) }</td>
+                        <td></td>
+					</tr>
+				}
+			</table>
+		}
 	</div>
 }

@@ -1,3 +1,5 @@
+/* Shared */
+
 html {
     box-sizing: border-box;
     font-size: 16px;
@@ -35,60 +37,12 @@ body {
     }
 }
 
-#heading {
-    margin-bottom: 1.5rem;
-}
-
-#heading a {
-    display: flex;
-    color: black;
-    text-decoration: none;
-    white-space: nowrap;
-
-}
-
-#logo-container {
-    display: flex;
-    margin-bottom: 0.5rem;
-}
-
-img {
-    max-width: 5rem;
-    height: auto;
-}
-
-#logo-text {
-    margin-top: auto;
-    margin-bottom: 0;
-    margin-left: 0.2rem;
-    font-size: 1.5rem;
-}
-
 h2,
 h3,
 h4,
 h5 {
     font-family: 'Arial', sans-serif;
     margin-bottom: 0.2rem;
-}
-
-#filters {
-    width: 12rem;
-    margin-bottom: 2rem;
-    margin-right: 1rem;
-    display: flex;
-    flex-direction: column;
-}
-
-
-#metadata {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-}
-
-#listings {
-    width: 100%;
-    font-size: 0.9rem;
 }
 
 label {
@@ -129,7 +83,7 @@ input[type=number] {
 }
 
 ::placeholder {
-    color: #222222;
+    color: #AAAAAA;
 }
 
 .input-field {
@@ -161,7 +115,6 @@ button:hover {
 }
 
 table {
-    /*width: 100%;*/
     border-top: 1px solid #EFEFEF;
     border-spacing: 0px 0px;
     padding-top: 0.5rem;
@@ -177,10 +130,6 @@ thead {
     text-align: left;
 }
 
-#listings thead {
-    font-size: 1.2rem;
-}
-
 th,
 td {
     white-space: nowrap;
@@ -192,29 +141,8 @@ td {
     padding-bottom: 0.2rem;
 }
 
-#listings th:first-child,
-#listingstd:first-child {
-    padding-left: 0.2rem;
-}
-
-#listings th:last-child,
-#listings td:last-child {
-    padding-right: 0.2rem;
-    width: 100%;
-}
-
 tr:nth-child(even) {
     background-color: rgba(74, 111, 167, 0.05);
-}
-
-.address {
-    min-width: 16rem;
-    max-width: 16rem;
-    white-space: wrap;
-}
-
-#listings th {
-    text-align: left;
 }
 
 .right-align {
@@ -240,11 +168,11 @@ th .right-align {
     cursor: pointer;
 }
 
-a {
+table a {
     text-decoration: none;
 }
 
-a:hover {
+table a:hover {
     text-decoration: underline;
 }
 
@@ -252,15 +180,114 @@ a:hover {
     color: gray;
 }
 
+/* Logo */
+
+#heading {
+    margin-bottom: 1.5rem;
+}
+
+#heading a {
+    display: flex;
+    color: black;
+    text-decoration: none;
+    white-space: nowrap;
+
+}
+
+#logo-container {
+    display: flex;
+    margin-bottom: 0.5rem;
+}
+
+img {
+    max-width: 5rem;
+    height: auto;
+}
+
+#logo-text {
+    margin-top: auto;
+    margin-bottom: 0;
+    margin-left: 0.2rem;
+    font-size: 1.5rem;
+}
+
+/* Filters */
+
+#filters {
+    width: 12rem;
+    margin-bottom: 2rem;
+    margin-right: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Listings */
+
+#listings {
+    width: 100%;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+#metadata {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+#listings thead {
+    font-size: 1.2rem;
+}
+
+#listings th:first-child,
+#listingstd:first-child {
+    padding-left: 0.2rem;
+}
+
+#listings th:last-child,
+#listings td:last-child {
+    padding-right: 0.2rem;
+    width: 100%;
+}
+
+#listings .address {
+    min-width: 16rem;
+    max-width: 16rem;
+    white-space: wrap;
+}
+
+#listings th {
+    text-align: left;
+}
+
+
+/* Sidebar */
+
+.button {
+    color: blue;
+    text-decoration: none;
+}
+
+.button:hover {
+    color: gray;
+    cursor: pointer;
+}
 
 /* Listing info */
 
 #listing-info {
     padding-left: 2rem;
+    width: 100%;
 }
 
 #listing-info table {
-    margin-top: 2rem;
+    width: 100%;
+}
+
+#listing-info table td:last-child{
+    width: 100%;
+}
+
+#listing-info-table {
     margin-bottom: 2rem;
 }
 
