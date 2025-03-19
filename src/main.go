@@ -14,13 +14,10 @@ import (
 func main() {
 	assetsDir := "./assets"
 
-	info, err := os.Stat(assetsDir)
+	_, err := os.Stat(assetsDir)
 
 	if err != nil {
 		panic("Could not stat assets directory. Make sure assets dir is in the working directory.")
-	}
-	if info.Mode().Perm()&0444 != 0444 {
-		panic("Missing permissions to read assets")
 	}
 
 	router := mux.NewRouter()
