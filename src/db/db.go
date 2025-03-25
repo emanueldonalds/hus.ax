@@ -68,32 +68,7 @@ func GetListing(id int, sqldb *sql.DB) Listing {
 
 	query.Close()
 
-	priceChanges := GetPriceChanges([]Listing{listing}, sqldb)
-
-	if len(priceChanges) > 0 {
-		for i := range len(priceChanges) - 1 {
-			priceChange := priceChanges[i]
-
-			if i < len(priceChanges) {
-				previousPriceChange := priceChanges[i+1]
-				priceChange.FirstSeen = previousPriceChange.LastSeen
-				priceChange.PreviousPrice = previousPriceChange.Price
-			}
-
-			listing.PriceHistory = append(listing.PriceHistory, priceChange)
-		}
-
-		// Add the current price as the final price change
-
-		lastPriceChange := priceChanges[0]
-
-		currentPrice := new(PriceChange)
-		currentPrice.FirstSeen = lastPriceChange.LastSeen
-		currentPrice.PreviousPrice = lastPriceChange.Price
-		currentPrice.Price = listing.Price
-
-		listing.PriceHistory = append([]PriceChange{*currentPrice}, listing.PriceHistory...)
-	}
+	listing.PriceHistory = GetPriceChanges([]Listing{listing}, sqldb)
 
 	return listing
 }
@@ -175,7 +150,7 @@ func GetPriceChanges(listings []Listing, sqldb *sql.DB) []PriceChange {
 
 	joinedIds := strings.Join(listingsIds, ", ")
 
-	query, err := sqldb.Query("SELECT IFNULL(price, 0), COALESCE(last_seen, ''), listing_id FROM price_change WHERE listing_id IN (" + joinedIds + ") ORDER BY last_seen DESC")
+	query, err := sqldb.Query("SELECT IFNULL(price, 0), effective_from, COALESCE(effective_to, ''), listing_id FROM price_change WHERE listing_id IN (" + joinedIds + ") ORDER BY effective_from DESC")
 
 	if err != nil {
 		panic(err.Error())
@@ -185,7 +160,7 @@ func GetPriceChanges(listings []Listing, sqldb *sql.DB) []PriceChange {
 
 	for query.Next() {
 		var rowPriceChange PriceChange
-		err := query.Scan(&rowPriceChange.Price, &rowPriceChange.LastSeen, &rowPriceChange.ListingId)
+		err := query.Scan(&rowPriceChange.Price, &rowPriceChange.EffectiveFrom, &rowPriceChange.EffectiveTo, &rowPriceChange.ListingId)
 
 		if err != nil {
 			panic(err.Error())

@@ -69,7 +69,7 @@ templ listingInfo(listing db.Listing) {
 templ priceHistory(listing db.Listing) {
 	<div>
 		if (len(listing.PriceHistory) > 0) {
-			<h3>Prisändringar</h3>
+			<h3>Prishistorik</h3>
 			<table>
 				<thead>
 					<tr>
@@ -77,20 +77,16 @@ templ priceHistory(listing db.Listing) {
 							Datum
 						</th>
 						<th>
-							Från
+							Pris
 						</th>
-						<th>
-							Till
-						</th>
-                        <th> </th>
+						<th></th>
 					</tr>
 				</thead>
 				for _, priceChange := range listing.PriceHistory {
 					<tr>
-						<td>{ formatters.FormatFullDate(priceChange.FirstSeen) } </td>
-						<td class="right-align">{ formatters.FormatPrice(priceChange.PreviousPrice ) }</td>
+						<td class="right-align">{ formatters.FormatFullDate(priceChange.EffectiveFrom) } </td>
 						<td class="right-align">{ formatters.FormatPrice(priceChange.Price) }</td>
-                        <td></td>
+						<td></td>
 					</tr>
 				}
 			</table>
