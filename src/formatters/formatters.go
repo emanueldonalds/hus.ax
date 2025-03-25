@@ -92,15 +92,15 @@ func parseTime(value string) time.Time {
 }
 
 func FormatPrevPrice(priceHistory []db.PriceChange) string {
-	if len(priceHistory) == 0 {
+	if len(priceHistory) == 1 {
 		return ""
 	}
-	var lastPrice = priceHistory[0]
+	var lastPrice = priceHistory[1]
 	return FormatPriceChange(lastPrice)
 }
 
 func FormatPriceChange(priceChange db.PriceChange) string {
-	return strings.TrimSpace(fmt.Sprintf("%s (%s)", FormatPrice(priceChange.Price), FormatDate(priceChange.LastSeen)))
+	return strings.TrimSpace(fmt.Sprintf("%s (%s)", FormatPrice(priceChange.Price), FormatDate(priceChange.EffectiveFrom)))
 }
 
 func FormatBool(value bool) string {
