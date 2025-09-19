@@ -92,7 +92,7 @@ func parseTime(value string) time.Time {
 }
 
 func FormatPrevPrice(priceHistory []db.PriceChange) string {
-	if len(priceHistory) == 1 {
+	if len(priceHistory) <= 1 {
 		return ""
 	}
 	var lastPrice = priceHistory[1]

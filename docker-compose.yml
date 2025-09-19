@@ -1,0 +1,31 @@
+services:
+  app:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    env_file: /etc/envs/property-viewer.env
+    restart: unless-stopped
+    ports:
+      - "4932:4932"
+    profiles: [prod]
+
+  app-local:
+    build:
+      dockerfile: ./Dockerfile
+      context: .
+    environment:
+      PROPERTY_VIEWER_DB_HOST: db-local
+      PROPERTY_VIEWER_DB_PASSWORD: abc123
+    ports:
+      - "127.0.0.1:4932:4932"
+    profiles: [local]
+
+  db-local:
+    image: mariadb:10.5
+    environment:
+      MARIADB_ROOT_PASSWORD: abc123
+    volumes:
+      - ./seed.sql:/docker-entrypoint-initdb.d/seed.sql:ro
+    ports:
+      - "127.0.0.1:3306:3306"
+    profiles: [local]

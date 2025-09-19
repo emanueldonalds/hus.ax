@@ -1,4 +1,20 @@
-FROM mariadb:10.5
-ENV MARIADB_ROOT_PASSWORD="abc123"
-ADD ./seed.sql /docker-entrypoint-initdb.d/seed.sql
-EXPOSE 3306
+FROM golang:1.24 AS build
+
+WORKDIR /app
+COPY src/go.mod src/go.sum ./
+RUN go mod download
+
+COPY src /app
+RUN go tool templ generate
+RUN CGO_ENABLED=0 GOOS=linux go build -o /entrypoint
+
+FROM gcr.io/distroless/static-debian11 AS final
+
+WORKDIR /
+COPY --from=build /entrypoint /entrypoint
+COPY --from=build /app/assets /assets
+COPY --from=build /app/rss/template.xml /rss/template.xml
+
+EXPOSE 4932
+USER nonroot:nonroot
+ENTRYPOINT ["/entrypoint"]
