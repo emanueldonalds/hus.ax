@@ -19,24 +19,6 @@ body {
     box-sizing: inherit;
 }
 
-@media (min-width: 1024px) {
-    html {
-        font-size: 18px;
-    }
-}
-
-@media (min-width: 2000px) {
-    html {
-        font-size: 22px;
-    }
-}
-
-@media (min-width: 3000px) {
-    html {
-        font-size: 40px;
-    }
-}
-
 h2,
 h3,
 h4,
@@ -61,7 +43,6 @@ label {
 input,
 select {
     height: 1.8rem;
-    font-size: 0.8rem;
     border: 1px solid #e3e3e3;
     border-radius: 0.15rem;
     background-color: white;
@@ -106,7 +87,6 @@ button {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 0.8rem;
 }
 
 button:hover {
@@ -225,7 +205,6 @@ img {
 
 #listings {
     width: 100%;
-    font-size: 0.9rem;
     white-space: nowrap;
 }
 
@@ -235,7 +214,6 @@ img {
 }
 
 #listings thead {
-    font-size: 1.2rem;
 }
 
 #listings th:first-child,
