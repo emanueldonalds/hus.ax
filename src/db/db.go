@@ -81,6 +81,7 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 	query, err := sqldb.Query(
 		"SELECT "+listingFields+"FROM listing WHERE "+
 			deletedIn(qIncludeDeleted)+
+			"AND (? IS NULL OR CONCAT(name, address) LIKE CONCAT('%', ?, '%'))"+
 			"AND agency = COALESCE(NULLIF(?, ''), agency) "+
 			"AND (listing.price IS NULL OR listing.price >= COALESCE(NULLIF(?, ''), listing.price-1)) "+
 			"AND (listing.price IS NULL OR listing.price <= COALESCE(NULLIF(?, ''), listing.price+1)) "+
@@ -95,6 +96,8 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 			"HAVING (price_over_area IS NULL OR price_over_area >= COALESCE(NULLIF(?, ''), price_over_area-1)) "+
 			"AND (price_over_area IS NULL OR price_over_area <= COALESCE(NULLIF(?, ''), price_over_area+1)) "+
 			orderBy(qOrderBy, qSortOrder),
+		r.URL.Query().Get("search"),
+		r.URL.Query().Get("search"),
 		r.URL.Query().Get("agency"),
 		r.URL.Query().Get("price_min"),
 		r.URL.Query().Get("price_max"),

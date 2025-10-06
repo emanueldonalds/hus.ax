@@ -9,6 +9,10 @@ templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
 
 templ filters() {
 	<form id="filters" hx-get="/filter" hx-target="#listings" hx-trigger="change, submit">
+		<div class="input-group">
+			<label>Sök</label>
+			<input class="input-field" placeholder="Fritext" id="search" name="search"/>
+		</div>
 		@inputRange("price_min", "price_max", "Pris")
 		@inputRange("build_year_min", "build_year_max", "År")
 		@inputRange("size_value_min", "size_value_max", "Area")
