@@ -7,6 +7,8 @@ type Listing struct {
 	Address       string
 	Price         int
 	Url           string
+	InfoUrl       string
+	GoogleMapsUrl string
 	Size          Size
 	PriceOverArea int
 	Rooms         int

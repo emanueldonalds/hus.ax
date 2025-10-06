@@ -1,11 +1,12 @@
 package web
 
 import (
-    "strconv"
 	"database/sql"
 	"fmt"
-	"github.com/gorilla/mux"
 	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 
 	"github.com/emanueldonalds/property-viewer/db"
 )
@@ -27,17 +28,23 @@ func FilterHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
 func DetailsHandler(sqldb *sql.DB) func(w http.ResponseWriter, r *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
-        idParam := params["id"]
+		idParam := params["id"]
 
-        id, err := strconv.Atoi(idParam)
+		id, err := strconv.Atoi(idParam)
 
-        if err != nil {
-            fmt.Printf("Could not convert ID param [%s] to int", idParam)
-        }
+		if err != nil {
+			fmt.Printf("Could not convert ID param [%s] to int", idParam)
+		}
 
-        listing := db.GetListing(id, sqldb);
+		listing := db.GetListing(id, sqldb)
+		listingHistory := db.GetListingHistory(id, sqldb)
 
-        listingPage := Listing(listing)
-        listingPage.Render(r.Context(), w)
+		for i := range listingHistory {
+			historicListing := &listingHistory[i]
+			historicListing.InfoUrl = "https://" + r.Host + "/info/" + historicListing.Id
+		}
+
+		listingPage := Listing(listing, listingHistory)
+		listingPage.Render(r.Context(), w)
 	}
 }

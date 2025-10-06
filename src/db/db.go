@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"net/url"
 	"os"
 	"slices"
 	"strings"
@@ -66,12 +67,39 @@ func GetListing(id int, sqldb *sql.DB) Listing {
 
 	var listing Listing
 	scanListing(query, &listing)
+	addGoogleMapsUrl(&listing)
 
 	query.Close()
 
 	listing.PriceHistory = GetPriceChanges([]Listing{listing}, sqldb)
 
 	return listing
+}
+
+func GetListingHistory(id int, sqldb *sql.DB) []Listing {
+	query, err := sqldb.Query(
+		"SELECT "+listingFields+" FROM listing WHERE address = (SELECT address FROM listing WHERE id = ?) ORDER BY first_seen ASC",
+		id,
+	)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	query.Next()
+
+	listings := []Listing{}
+
+	for query.Next() {
+		var rowListing Listing
+		scanListing(query, &rowListing)
+		addGoogleMapsUrl(&rowListing)
+		listings = append(listings, rowListing)
+	}
+
+	query.Close()
+
+	return listings
 }
 
 func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
@@ -123,7 +151,12 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 	for query.Next() {
 		var rowListing Listing
 		scanListing(query, &rowListing)
+		addGoogleMapsUrl(&rowListing)
 		listings = append(listings, rowListing)
+	}
+
+	for _, l := range listings {
+		println(l.GoogleMapsUrl)
 	}
 
 	query.Close()
@@ -264,4 +297,8 @@ func scanListing(query *sql.Rows, listing *Listing) {
 	if err != nil {
 		panic(err.Error())
 	}
+}
+
+func addGoogleMapsUrl(listing *Listing) {
+	listing.GoogleMapsUrl = "https://www.google.com/maps/search/?api=1&query=" + url.QueryEscape(listing.Address)
 }

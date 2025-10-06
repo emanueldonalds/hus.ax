@@ -5,15 +5,15 @@ import (
 	"github.com/emanueldonalds/property-viewer/formatters"
 )
 
-templ Listing(listing db.Listing) {
-	@Layout(sidebar(), listingInfo(listing))
+templ Listing(listing db.Listing, listingHistory []db.Listing) {
+	@Layout(sidebar(), listingInfo(listing, listingHistory))
 }
 
 templ sidebar() {
 	<a class="button" href="/">&#60; Tillbaka</a>
 }
 
-templ listingInfo(listing db.Listing) {
+templ listingInfo(listing db.Listing, listingHistory []db.Listing) {
 	<div id="listing-info">
 		<h2>{ listing.Address }</h2>
 		<table id="listing-info-table">
@@ -50,11 +50,11 @@ templ listingInfo(listing db.Listing) {
 				<td>{ listing.Agency } </td>
 			</tr>
 			<tr>
-				<th>Upptäckt</th>
+				<th>Först synlig</th>
 				<td>{ formatters.FormatFullDate(listing.FirstSeen) } </td>
 			</tr>
 			<tr>
-				<th>Senast sedd</th>
+				<th>Senast synlig</th>
 				<td>{ formatters.FormatFullDate(listing.LastSeen) } </td>
 			</tr>
 			<tr>
@@ -62,13 +62,14 @@ templ listingInfo(listing db.Listing) {
 				<td>{ formatters.FormatBool(!listing.Deleted) } </td>
 			</tr>
 		</table>
-		@priceHistory(listing)
+		@priceHistoryTable(listing)
+		@listingHistoryTable(listing, listingHistory)
 	</div>
 }
 
-templ priceHistory(listing db.Listing) {
-	<div>
-		if (len(listing.PriceHistory) > 0) {
+templ priceHistoryTable(listing db.Listing) {
+	if (len(listing.PriceHistory) > 0) {
+		<div>
 			<h3>Prishistorik</h3>
 			<table>
 				<thead>
@@ -90,6 +91,39 @@ templ priceHistory(listing db.Listing) {
 					</tr>
 				}
 			</table>
-		}
-	</div>
+		</div>
+	}
+}
+
+templ listingHistoryTable(listing db.Listing, listingHistory []db.Listing) {
+	if (len(listingHistory) > 0) {
+		<div>
+			<h3>Annonser med samma address</h3>
+			<table>
+				<thead>
+					<tr>
+						<th>
+							Datum
+						</th>
+						<th>
+							Pris
+						</th>
+						<th>
+							Länk
+						</th>
+					</tr>
+				</thead>
+				for _, historicListing := range listingHistory {
+					if (listing.Id != historicListing.Id) {
+						<tr>
+							<td class="right-align">{ formatters.FormatFullDate(historicListing.FirstSeen) } </td>
+							<td class="right-align">{ formatters.FormatPrice(historicListing.Price) } </td>
+							<td><a href={ templ.URL(historicListing.Url) }>{ historicListing.Url }</a> </td>
+							<td><a href={ templ.URL(historicListing.InfoUrl) }>Info</a> </td>
+						</tr>
+					}
+				}
+			</table>
+		</div>
+	}
 }
