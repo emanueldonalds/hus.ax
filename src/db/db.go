@@ -155,10 +155,6 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 		listings = append(listings, rowListing)
 	}
 
-	for _, l := range listings {
-		println(l.GoogleMapsUrl)
-	}
-
 	query.Close()
 
 	priceChanges := GetPriceChanges(listings, sqldb)
