@@ -41,7 +41,7 @@ func DetailsHandler(sqldb *sql.DB) func(w http.ResponseWriter, r *http.Request) 
 
 		for i := range listingHistory {
 			historicListing := &listingHistory[i]
-			historicListing.InfoUrl = "https://" + r.Host + "/info/" + historicListing.Id
+			historicListing.InfoUrl = "https://hus.ax/info/" + historicListing.Id
 		}
 
 		listingPage := Listing(listing, listingHistory)
