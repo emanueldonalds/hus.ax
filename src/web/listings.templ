@@ -43,7 +43,7 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent) {
 			<tbody>
 				for _, x := range listings {
 					<tr class={ getRowClass(x.Deleted) }>
-						<td class="address" title={ x.Address }>
+						<td class="address" title={ x.Name }>
 							<a href={ templ.URL(x.Url) }>{ x.Address }</a>
 						</td>
 						<td class="right-align">{ formatters.FormatPrice(x.Price) }</td>

@@ -12,6 +12,7 @@ import (
 )
 
 const listingFields = "listing.id, " +
+	"IFNULL(name, \"\"), " +
 	"IFNULL(address, \"\"), " +
 	"IFNULL(listing.price, -1), " +
 	"IFNULL(build_year, -1), " +
@@ -89,8 +90,8 @@ func GetListings(r *http.Request, sqldb *sql.DB) []Listing {
 			"AND (build_year IS NULL OR build_year <= COALESCE(NULLIF(?, ''), build_year+1)) "+
 			"AND (size_value IS NULL OR size_value >= COALESCE(NULLIF(?, ''), size_value-1)) "+
 			"AND (size_value IS NULL OR size_value <= COALESCE(NULLIF(?, ''), size_value+1)) "+
-			"AND (rooms IS NULL OR rooms >= COALESCE(NULLIF(?, ''), rooms-1)) "+
-			"AND (rooms IS NULL OR rooms <= COALESCE(NULLIF(?, ''), rooms+1)) "+
+			"and (rooms is null or rooms >= coalesce(nullif(?, ''), rooms-1)) "+
+			"and (rooms is null or rooms <= coalesce(nullif(?, ''), rooms+1)) "+
 			"AND first_seen >= COALESCE(NULLIF(?, ''), first_seen) "+
 			"AND listing.last_seen <= COALESCE(NULLIF(?, ''), listing.last_seen ) "+
 			"HAVING (price_over_area IS NULL OR price_over_area >= COALESCE(NULLIF(?, ''), price_over_area-1)) "+
@@ -245,6 +246,7 @@ func deletedIn(qIncludeDeleted string) string {
 func scanListing(query *sql.Rows, listing *Listing) {
 	err := query.Scan(
 		&listing.Id,
+		&listing.Name,
 		&listing.Address,
 		&listing.Price,
 		&listing.Year,

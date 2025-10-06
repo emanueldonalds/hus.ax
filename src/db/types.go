@@ -3,6 +3,7 @@ package db
 type Listing struct {
 	Id            string
 	Agency        string
+	Name          string
 	Address       string
 	Price         int
 	Url           string
@@ -23,10 +24,10 @@ type Size struct {
 }
 
 type PriceChange struct {
-	EffectiveFrom  string
-    EffectiveTo string
-	Price     int
-	ListingId string
+	EffectiveFrom string
+	EffectiveTo   string
+	Price         int
+	ListingId     string
 }
 
 type ScrapeEvent struct {
