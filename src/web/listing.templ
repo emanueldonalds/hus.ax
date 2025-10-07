@@ -23,7 +23,10 @@ templ listingInfo(listing db.Listing, listingHistory []db.Listing) {
 			</tr>
 			<tr>
 				<th>Adress</th>
-				<td>{ listing.Address }</td>
+				<td>
+					{ listing.Address }
+					(<a href={ templ.URL(listing.GoogleMapsUrl) }>Google Maps</a>)
+				</td>
 			</tr>
 			<tr>
 				<th>Pris</th>
