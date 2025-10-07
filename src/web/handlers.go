@@ -12,16 +12,22 @@ import (
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
+	orderBy := r.URL.Query().Get("order_by")
+	sortOrder := r.URL.Query().Get("sort_order")
+
 	listings := db.GetListings(r, sqldb)
 	lastScrape := db.GetLastScrape(sqldb)
-	index := Index(listings, lastScrape)
+	index := Index(listings, lastScrape, orderBy, sortOrder)
 	index.Render(r.Context(), w)
 }
 
 func FilterHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
+	orderBy := r.URL.Query().Get("order_by")
+	sortOrder := r.URL.Query().Get("sort_order")
+
 	listings := db.GetListings(r, sqldb)
 	lastScrape := db.GetLastScrape(sqldb)
-	index := Listings(listings, lastScrape)
+	index := Listings(listings, lastScrape, orderBy, sortOrder)
 	index.Render(r.Context(), w)
 }
 

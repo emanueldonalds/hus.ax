@@ -2,8 +2,8 @@ package web
 
 import "github.com/emanueldonalds/property-viewer/db"
 
-templ Index(listings []db.Listing, lastScrape db.ScrapeEvent) {
-	@Layout(filters(), Listings(listings, lastScrape))
+templ Index(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string, sortOrder string) {
+	@Layout(filters(), Listings(listings, lastScrape, orderBy, sortOrder))
 	<script src="/assets/index.js"></script>
 }
 

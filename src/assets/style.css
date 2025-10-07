@@ -224,17 +224,71 @@ img {
 #listings th:last-child,
 #listings td:last-child {
     padding-right: 0.2rem;
-    width: 100%;
+}
+
+
+#listings th {
+    text-align: left;
+    white-space: wrap;
+}
+
+#listings td {
+    white-space: wrap;
 }
 
 #listings .address {
     min-width: 16rem;
     max-width: 16rem;
-    white-space: wrap;
 }
 
-#listings th {
-    text-align: left;
+#listings .price {
+    min-width: 6rem;
+    max-width: 6rem;
+}
+
+#listings .size {
+    min-width: 6rem;
+    max-width: 6rem;
+}
+
+#listings .price_over_area {
+    min-width: 6rem;
+    max-width: 6rem;
+}
+
+#listings .rooms {
+    min-width: 4rem;
+    max-width: 4rem;
+}
+
+#listings .build_year {
+    min-width: 6rem;
+    max-width: 6rem;
+}
+
+#listings .last_price {
+    min-width: 14rem;
+    max-width: 14rem;
+}
+
+#listings .first_seen {
+    min-width: 8rem;
+    max-width: 8rem;
+}
+
+#listings .agency {
+    min-width: 8rem;
+    max-width: 8rem;
+}
+
+#listings .google_maps {
+    min-width: 8rem;
+    max-width: 8rem;
+}
+
+#listings .info {
+    min-width: 8rem;
+    max-width: 8rem;
 }
 
 

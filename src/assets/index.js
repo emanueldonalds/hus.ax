@@ -58,13 +58,22 @@ function sort(field) {
     const orderByInput = document.getElementById('order_by')
     const sortOrderInput = document.getElementById('sort_order')
 
+    // Reset sort order when changing sort column
+    if (orderByInput.value != field) {
+        sortOrderInput.value = ""
+    }
+
     orderByInput.value = field;
 
-    if (orderByInput.value === field) {
-        sortOrderInput.value = sortOrderInput.value === "desc" ? "asc" : "desc";
+    // Remove sort when on descending, so when clicking the column multiple times the order is: sort asc -> sort desc -> remove sort -> repeat
+    if (sortOrderInput.value === "desc") {
+        orderByInput.value = ""
+        sortOrderInput.value = ""
     }
     else {
-        sortOrderInput.value = "desc";
+        sortOrderInput.value = sortOrderInput.value === "" ? "asc" : "desc";
     }
+
+
     document.getElementById("send").click();
 }
