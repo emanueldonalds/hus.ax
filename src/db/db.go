@@ -86,8 +86,6 @@ func GetListingHistory(id int, sqldb *sql.DB) []Listing {
 		panic(err.Error())
 	}
 
-	query.Next()
-
 	listings := []Listing{}
 
 	for query.Next() {
@@ -98,7 +96,6 @@ func GetListingHistory(id int, sqldb *sql.DB) []Listing {
 	}
 
 	query.Close()
-
 	return listings
 }
 

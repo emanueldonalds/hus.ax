@@ -99,7 +99,7 @@ templ priceHistoryTable(listing db.Listing) {
 }
 
 templ listingHistoryTable(listing db.Listing, listingHistory []db.Listing) {
-	if (len(listingHistory) > 0) {
+	if (len(listingHistory) > 1) {
 		<div>
 			<h3>Annonser med samma address</h3>
 			<table>
