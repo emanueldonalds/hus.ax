@@ -1,0 +1,72 @@
+package web 
+
+import "github.com/emanueldonalds/husax/db"
+
+templ Stats(stats db.Stats) {
+	<script src="/assets/chart.js"></script>
+	@Layout(filters(), StatsContent(stats))
+	@templ.JSFuncCall("createChart", stats)
+}
+
+templ StatsContent(stats db.Stats) {
+	<div id="charts">
+		<canvas class="chart" id="n-listings-chart"></canvas>
+		<canvas class="chart" id="avg-price-m2-chart"></canvas>
+		<canvas class="chart" id="avg-price-chart"></canvas>
+	</div>
+	<script>
+        function createChart(series) {
+            var euroOptions = {
+                scales: {
+                    y: {
+                        ticks: {
+                            callback: function(value, index, ticks) {
+                                return new Intl.NumberFormat('fi-FI').format(value) + ' €';
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            charts = []
+            charts.push(new Chart(document.getElementById('n-listings-chart'), {
+                type: 'line',
+                data: {
+                    labels: series.Date,
+                    datasets: [{
+                        label: 'Antal annonser',
+                        data: series.Nlistings,
+                        borderWidth: 1
+                    }]
+                }
+            }))
+            charts.push(new Chart(document.getElementById('avg-price-m2-chart'), {
+                type: 'line',
+                data: {
+                    labels: series.Date,
+                    datasets: [{
+                        label: 'Genomsnittligt pris per m2',
+                        data: series.AvgPriceM2,
+                        borderWidth: 1
+                    }]
+                },
+                options: euroOptions
+            }))
+            charts.push(new Chart(document.getElementById('avg-price-chart'), {
+                type: 'line',
+                data: {
+                    labels: series.Date,
+                    datasets: [{
+                        label: 'Genomsnittligt pris',
+                        data: series.AvgPrice,
+                        borderWidth: 1
+                    }]
+                },
+                options: euroOptions
+            }))
+            return charts
+
+        }
+    </script>
+}

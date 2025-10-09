@@ -324,3 +324,17 @@ img {
 #listing-info-table th {
     text-align: right;
 }
+
+/* Charts */
+
+#charts {
+    width: 100%;
+    min-width: 40em;
+    display: flex;
+    flex-direction: column;
+    gap: 4rem;
+}
+
+.chart {
+    max-height: 20rem;
+}

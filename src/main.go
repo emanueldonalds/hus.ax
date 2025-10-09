@@ -10,6 +10,7 @@ import (
 	"github.com/emanueldonalds/husax/db"
 	"github.com/emanueldonalds/husax/rss"
 	"github.com/emanueldonalds/husax/web"
+	"github.com/gorilla/mux"
 )
 
 // Same etag for all files, generates a new every time server restarts
@@ -24,13 +25,15 @@ func main() {
 		panic("Could not stat assets directory. Make sure assets dir is in the working directory.")
 	}
 
-	mux := http.NewServeMux()
+	mux := mux.NewRouter()
 	db := db.GetDb()
+
 	assetsHandler := http.StripPrefix("/assets/", http.FileServer(http.Dir(assetsDir)))
+	mux.PathPrefix("/assets/").Handler(cacheControl(assetsHandler))
 
 	mux.Handle("/", cacheControl(web.IndexHandler(db)))
-	mux.Handle("/assets/", cacheControl(assetsHandler))
 	mux.Handle("/info/{id}", cacheControl(web.DetailsHandler(db)))
+	mux.Handle("/stats", cacheControl(web.StatisticsHandler(db)))
 	mux.Handle("/filter", cacheControl(web.FilterHandler(db)))
 	mux.Handle("/rss", cacheControl(rss.RssHandler(db)))
 

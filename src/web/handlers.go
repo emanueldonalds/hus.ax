@@ -58,3 +58,10 @@ func DetailsHandler(sqldb *sql.DB) http.Handler {
 		listingPage.Render(r.Context(), w)
 	})
 }
+
+func StatisticsHandler(sqldb *sql.DB) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		stats := db.GetStatistics(sqldb)
+		Stats(stats).Render(r.Context(), w)
+	})
+}

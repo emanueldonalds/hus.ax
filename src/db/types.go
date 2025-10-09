@@ -40,3 +40,17 @@ type ScrapeEvent struct {
 	Undeleted   int
 	TotalActive int
 }
+
+type DailyStatistic struct {
+	Date       string
+	AvgPrice   int
+	AvgPriceM2 int
+	Nlistings  int
+}
+
+type Stats struct {
+	Date       []string
+	AvgPrice   []int
+	AvgPriceM2 []int
+	Nlistings  []int
+}

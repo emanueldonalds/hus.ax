@@ -20,9 +20,11 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string,
 			&emsp;
 			Uppdaterad: { formatters.FormatDateTime(lastScrape.Date) }
 			&emsp;
-			<a href="https://github.com/emanueldonalds/hus.ax">Källkod</a>
+            <a href="/stats">Statistik</a>
 			&emsp;
-			<a href="/rss">RSS-flöde</a>
+            <a href="/rss">RSS-flöde</a>
+			&emsp;
+            <a href="https://github.com/emanueldonalds/hus.ax">Källkod</a>
 			&emsp;
 			<a href="email:info@edsoftware.com">info@edsoftware.ax</a>
 		</div>
@@ -30,7 +32,7 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string,
 			<thead>
 				<tr>
 					@SortableHdr("", "address", "Adress", orderBy, sortOrder)
-					@SortableHdr("right-align price", "price", "Price", orderBy, sortOrder)
+					@SortableHdr("right-align price", "price", "Pris", orderBy, sortOrder)
 					@SortableHdr("right-align size", "size_value", "Area", orderBy, sortOrder)
 					@SortableHdr("right-align price_over_area", "price_over_area", "Pris/m2", orderBy, sortOrder)
 					@SortableHdr("right-align rooms", "rooms", "Rum", orderBy, sortOrder)

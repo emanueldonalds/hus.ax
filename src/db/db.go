@@ -8,6 +8,7 @@ import (
 	"os"
 	"slices"
 	"strings"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -30,8 +31,16 @@ const listingFields = "listing.id, " +
 
 func GetDb() *sql.DB {
 	dbHost := os.Getenv("HUSAX_DB_HOST")
+	dbName := os.Getenv("HUSAX_DB_NAME")
+	dbUser := os.Getenv("HUSAX_DB_USER")
 	dbPass := os.Getenv("HUSAX_DB_PASSWORD")
 
+	if dbUser == "" {
+		dbUser = "property-viewer"
+	}
+	if dbName == "" {
+		dbName = "property_api"
+	}
 	if dbHost == "" {
 		panic("HUSAX_DB_HOST must be set.")
 	}
@@ -39,7 +48,7 @@ func GetDb() *sql.DB {
 		panic("HUSAX_DB_PASSWORD must be set.")
 	}
 
-	connString := fmt.Sprintf("property-viewer:%s@tcp(%s:3306)/property_api", dbPass, dbHost)
+	connString := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s", dbUser, dbPass, dbHost, dbName)
 
 	db, err := sql.Open("mysql", connString)
 	if err != nil {
@@ -222,6 +231,49 @@ func GetLastScrape(sqldb *sql.DB) ScrapeEvent {
 	}
 
 	return scrapeEvent
+}
+
+func GetStatistics(sqldb *sql.DB) Stats {
+	query, err := sqldb.Query("SELECT date, avg_price, avg_pricem2, n_listings FROM daily_statistic ORDER BY date")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	dailyStats := []DailyStatistic{}
+
+	for query.Next() {
+		var rowStat DailyStatistic
+		err := query.Scan(
+			&rowStat.Date,
+			&rowStat.AvgPrice,
+			&rowStat.AvgPriceM2,
+			&rowStat.Nlistings,
+		)
+		if err != nil {
+			panic(err.Error())
+		}
+		dailyStats = append(dailyStats, rowStat)
+	}
+
+	query.Close()
+
+	stats := Stats{}
+
+	for _, dailyStat := range dailyStats {
+		t, err := time.Parse("2006-01-02", dailyStat.Date)
+		if err != nil {
+			panic(err.Error())
+		}
+		if t.Day() == 1 {
+			month := fmt.Sprintf("%d-%02d", t.Year(), t.Month())
+			stats.Date = append(stats.Date, month)
+			stats.AvgPrice = append(stats.AvgPrice, dailyStat.AvgPrice)
+			stats.AvgPriceM2 = append(stats.AvgPriceM2, dailyStat.AvgPriceM2)
+			stats.Nlistings = append(stats.Nlistings, dailyStat.Nlistings)
+		}
+	}
+	return stats
 }
 
 func orderBy(qOrderBy string, qSortOrder string) string {
