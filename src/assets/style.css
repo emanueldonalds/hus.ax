@@ -204,13 +204,8 @@ img {
 /* Listings */
 
 #metadata {
-    display: flex;
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
-}
-
-#contact-email {
-    margin-left: auto;
 }
 
 #listings {
