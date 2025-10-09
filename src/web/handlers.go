@@ -8,7 +8,7 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/emanueldonalds/property-viewer/db"
+	"github.com/emanueldonalds/husax/db"
 )
 
 func IndexHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {

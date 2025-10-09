@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/emanueldonalds/property-viewer/db"
-	"github.com/emanueldonalds/property-viewer/rss"
-	"github.com/emanueldonalds/property-viewer/web"
+	"github.com/emanueldonalds/husax/db"
+	"github.com/emanueldonalds/husax/rss"
+	"github.com/emanueldonalds/husax/web"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"

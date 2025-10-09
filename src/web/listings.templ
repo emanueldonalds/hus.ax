@@ -1,8 +1,8 @@
 package web;
 
 import (
-	"github.com/emanueldonalds/property-viewer/db"
-	"github.com/emanueldonalds/property-viewer/formatters"
+	"github.com/emanueldonalds/husax/db"
+	"github.com/emanueldonalds/husax/formatters"
 	"strconv"
 )
 
@@ -20,9 +20,10 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string,
 			&emsp;
 			Uppdaterad: { formatters.FormatDateTime(lastScrape.Date) }
 			&emsp;
-			<a href="https://github.com/emanueldonalds/property-viewer">Källkod</a>
+			<a href="https://github.com/emanueldonalds/husax">Källkod</a>
 			&emsp;
 			<a href="/rss">RSS-flöde</a>
+            <a href="email:info@company.com" id="contact-email">info@edsoftware.ax</a>
 		</div>
 		<table id="listings-table">
 			<thead>

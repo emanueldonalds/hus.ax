@@ -30,8 +30,8 @@ Then run with env variables:
 ```
 cd src
 
-PROPERTY_VIEWER_DB_HOST=localhost \
-PROPERTY_VIEWER_DB_PASSWORD=abc123 \
+HUSAX_DB_HOST=localhost \
+HUSAX_DB_PASSWORD=abc123 \
 go tool templ generate --watch --cmd 'go run .'
  ```
 

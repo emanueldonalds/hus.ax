@@ -2,7 +2,7 @@ package formatters
 
 import (
 	"fmt"
-	"github.com/emanueldonalds/property-viewer/db"
+	"github.com/emanueldonalds/husax/db"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"strconv"

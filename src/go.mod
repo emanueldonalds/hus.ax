@@ -1,4 +1,4 @@
-module github.com/emanueldonalds/property-viewer
+module github.com/emanueldonalds/husax
 
 go 1.24.0
 

@@ -203,14 +203,19 @@ img {
 
 /* Listings */
 
+#metadata {
+    display: flex;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+
+#contact-email {
+    margin-left: auto;
+}
+
 #listings {
     width: 100%;
     white-space: nowrap;
-}
-
-#metadata {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
 }
 
 #listings thead {
@@ -226,10 +231,13 @@ img {
     padding-right: 0.2rem;
 }
 
-
 #listings th {
     text-align: left;
     white-space: wrap;
+}
+
+#listings th:last-child {
+    width: 100%;
 }
 
 #listings td {
@@ -290,7 +298,6 @@ img {
     min-width: 8rem;
     max-width: 8rem;
 }
-
 
 /* Sidebar */
 

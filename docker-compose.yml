@@ -3,7 +3,7 @@ services:
     build:
       dockerfile: ./Dockerfile
       context: .
-    env_file: /etc/envs/property-viewer.env
+    env_file: /etc/envs/husax.env
     restart: unless-stopped
     ports:
       - "4932:4932"
@@ -14,8 +14,8 @@ services:
       dockerfile: ./Dockerfile
       context: .
     environment:
-      PROPERTY_VIEWER_DB_HOST: db-local
-      PROPERTY_VIEWER_DB_PASSWORD: abc123
+      HUSAX_DB_HOST: db-local
+      HUSAX_DB_PASSWORD: abc123
     ports:
       - "127.0.0.1:4932:4932"
     profiles: [local]

@@ -29,14 +29,14 @@ const listingFields = "listing.id, " +
 	"deleted = 1 "
 
 func GetDb() *sql.DB {
-	dbHost := os.Getenv("PROPERTY_VIEWER_DB_HOST")
-	dbPass := os.Getenv("PROPERTY_VIEWER_DB_PASSWORD")
+	dbHost := os.Getenv("HUSAX_DB_HOST")
+	dbPass := os.Getenv("HUSAX_DB_PASSWORD")
 
 	if dbHost == "" {
-		panic("PROPERTY_VIEWER_DB_HOST must be set.")
+		panic("HUSAX_DB_HOST must be set.")
 	}
 	if dbPass == "" {
-		panic("PROPERTY_VIEWER_DB_PASSWORD must be set.")
+		panic("HUSAX_DB_PASSWORD must be set.")
 	}
 
 	connString := fmt.Sprintf("property-viewer:%s@tcp(%s:3306)/property_api", dbPass, dbHost)

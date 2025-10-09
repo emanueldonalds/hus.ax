@@ -5,13 +5,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/emanueldonalds/property-viewer/db"
+	"github.com/emanueldonalds/husax/db"
 )
 
 func TestQueryReturnsCorrectAmountOfListings(t *testing.T) {
 
-	os.Setenv("PROPERTY_VIEWER_DB_HOST", "0.0.0.0")
-	os.Setenv("PROPERTY_VIEWER_DB_PASSWORD", "abc123")
+	os.Setenv("HUSAX_DB_HOST", "0.0.0.0")
+	os.Setenv("HUSAX_DB_PASSWORD", "abc123")
 
 	sqldb := db.GetDb()
 	req, err := http.NewRequest("GET", "http://test.com/?deleted=false", nil)
@@ -30,8 +30,8 @@ func TestQueryReturnsCorrectAmountOfListings(t *testing.T) {
 
 func TestItemWithPriceHistoryIsNotDuplicated(t *testing.T) {
 
-	os.Setenv("PROPERTY_VIEWER_DB_HOST", "0.0.0.0")
-	os.Setenv("PROPERTY_VIEWER_DB_PASSWORD", "abc123")
+	os.Setenv("HUSAX_DB_HOST", "0.0.0.0")
+	os.Setenv("HUSAX_DB_PASSWORD", "abc123")
 
 	sqldb := db.GetDb()
 	req, err := http.NewRequest("GET", "http://test.com/?deleted=false", nil)

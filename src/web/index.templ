@@ -1,6 +1,6 @@
 package web 
 
-import "github.com/emanueldonalds/property-viewer/db"
+import "github.com/emanueldonalds/husax/db"
 
 templ Index(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string, sortOrder string) {
 	@Layout(filters(), Listings(listings, lastScrape, orderBy, sortOrder))

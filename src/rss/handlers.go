@@ -10,8 +10,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/emanueldonalds/property-viewer/db"
-	"github.com/emanueldonalds/property-viewer/formatters"
+	"github.com/emanueldonalds/husax/db"
+	"github.com/emanueldonalds/husax/formatters"
 )
 
 var rssTemplate = readFile("rss/template.xml")
