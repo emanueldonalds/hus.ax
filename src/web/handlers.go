@@ -11,28 +11,32 @@ import (
 	"github.com/emanueldonalds/husax/db"
 )
 
-func IndexHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
-	orderBy := r.URL.Query().Get("order_by")
-	sortOrder := r.URL.Query().Get("sort_order")
+func IndexHandler(sqldb *sql.DB) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		orderBy := r.URL.Query().Get("order_by")
+		sortOrder := r.URL.Query().Get("sort_order")
 
-	listings := db.GetListings(r, sqldb)
-	lastScrape := db.GetLastScrape(sqldb)
-	index := Index(listings, lastScrape, orderBy, sortOrder)
-	index.Render(r.Context(), w)
+		listings := db.GetListings(r, sqldb)
+		lastScrape := db.GetLastScrape(sqldb)
+		index := Index(listings, lastScrape, orderBy, sortOrder)
+		index.Render(r.Context(), w)
+	})
 }
 
-func FilterHandler(w http.ResponseWriter, r *http.Request, sqldb *sql.DB) {
-	orderBy := r.URL.Query().Get("order_by")
-	sortOrder := r.URL.Query().Get("sort_order")
+func FilterHandler(sqldb *sql.DB) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		orderBy := r.URL.Query().Get("order_by")
+		sortOrder := r.URL.Query().Get("sort_order")
 
-	listings := db.GetListings(r, sqldb)
-	lastScrape := db.GetLastScrape(sqldb)
-	index := Listings(listings, lastScrape, orderBy, sortOrder)
-	index.Render(r.Context(), w)
+		listings := db.GetListings(r, sqldb)
+		lastScrape := db.GetLastScrape(sqldb)
+		index := Listings(listings, lastScrape, orderBy, sortOrder)
+		index.Render(r.Context(), w)
+	})
 }
 
-func DetailsHandler(sqldb *sql.DB) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
+func DetailsHandler(sqldb *sql.DB) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		idParam := params["id"]
 
@@ -52,5 +56,5 @@ func DetailsHandler(sqldb *sql.DB) func(w http.ResponseWriter, r *http.Request) 
 
 		listingPage := Listing(listing, listingHistory)
 		listingPage.Render(r.Context(), w)
-	}
+	})
 }

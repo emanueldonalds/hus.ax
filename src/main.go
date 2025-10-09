@@ -2,14 +2,18 @@ package main
 
 import (
 	"fmt"
-	"github.com/emanueldonalds/husax/db"
-	"github.com/emanueldonalds/husax/rss"
-	"github.com/emanueldonalds/husax/web"
-	"github.com/gorilla/mux"
 	"log"
 	"net/http"
 	"os"
+	"time"
+
+	"github.com/emanueldonalds/husax/db"
+	"github.com/emanueldonalds/husax/rss"
+	"github.com/emanueldonalds/husax/web"
 )
+
+// Same etag for all files, generates a new every time server restarts
+var etag string = "W/\"" + fmt.Sprint(time.Now().UTC().Unix()) + "\""
 
 func main() {
 	assetsDir := "./assets"
@@ -20,18 +24,31 @@ func main() {
 		panic("Could not stat assets directory. Make sure assets dir is in the working directory.")
 	}
 
-	router := mux.NewRouter()
-
-	fs := http.FileServer(http.Dir(assetsDir))
+	mux := http.NewServeMux()
 	db := db.GetDb()
+	assetsHandler := http.StripPrefix("/assets/", http.FileServer(http.Dir(assetsDir)))
 
-	router.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", fs))
-
-	router.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) { web.IndexHandler(w, r, db) })
-	router.HandleFunc("/info/{id}", web.DetailsHandler(db))
-	router.HandleFunc("/filter", func(w http.ResponseWriter, r *http.Request) { web.FilterHandler(w, r, db) })
-	router.HandleFunc("/rss", func(w http.ResponseWriter, r *http.Request) { rss.RssHandler(w, r, db) })
+	mux.Handle("/", cacheControl(web.IndexHandler(db)))
+	mux.Handle("/assets/", cacheControl(assetsHandler))
+	mux.Handle("/info/{id}", cacheControl(web.DetailsHandler(db)))
+	mux.Handle("/filter", cacheControl(web.FilterHandler(db)))
+	mux.Handle("/rss", cacheControl(rss.RssHandler(db)))
 
 	fmt.Println("Listening on :4932")
-	log.Fatal(http.ListenAndServe(":4932", router))
+	log.Fatal(http.ListenAndServe(":4932", mux))
+}
+
+func cacheControl(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ifNoneMatch := r.Header.Get("If-None-Match")
+
+		if ifNoneMatch == etag {
+			w.WriteHeader(304)
+			return
+		}
+
+		w.Header().Set("ETag", etag)
+		w.Header().Set("Cache-Control", "no-cache, must-revalidate")
+		h.ServeHTTP(w, r)
+	})
 }
