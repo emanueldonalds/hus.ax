@@ -126,7 +126,7 @@ tr:nth-child(even) {
 }
 
 .right-align {
-    text-align: right;
+    text-align: right !important;
 }
 
 th .right-align {

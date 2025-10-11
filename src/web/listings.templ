@@ -37,7 +37,7 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string,
 					@SortableHdr("right-align price_over_area", "price_over_area", "Pris/m2", orderBy, sortOrder)
 					@SortableHdr("right-align rooms", "rooms", "Rum", orderBy, sortOrder)
 					@SortableHdr("right-align build_year", "build_year", "Årtal", orderBy, sortOrder)
-					<th class="last_price">Tidigare pris</th>
+					<th class="last_price right-align">Tidigare pris</th>
 					@SortableHdr("right-align first_seen", "first_seen", "Upptäckt", orderBy, sortOrder)
 					@SortableHdr("agency", "agency", "Mäklare", orderBy, sortOrder)
 					<th></th>
