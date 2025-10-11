@@ -329,10 +329,11 @@ img {
 
 #charts {
     width: 100%;
-    min-width: 40em;
+    min-width: 40rem;
     display: flex;
     flex-direction: column;
     gap: 4rem;
+    margin-left: 2rem;
 }
 
 .chart {
