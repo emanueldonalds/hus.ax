@@ -31,11 +31,11 @@ func main() {
 	assetsHandler := http.StripPrefix("/assets/", http.FileServer(http.Dir(assetsDir)))
 	mux.PathPrefix("/assets/").Handler(cacheControl(assetsHandler))
 
-	mux.Handle("/", cacheControl(web.IndexHandler(db)))
-	mux.Handle("/info/{id}", cacheControl(web.DetailsHandler(db)))
-	mux.Handle("/stats", cacheControl(web.StatisticsHandler(db)))
-	mux.Handle("/filter", cacheControl(web.FilterHandler(db)))
-	mux.Handle("/rss", cacheControl(rss.RssHandler(db)))
+	mux.Handle("/", web.IndexHandler(db))
+	mux.Handle("/info/{id}", web.DetailsHandler(db))
+	mux.Handle("/stats", web.StatisticsHandler(db))
+	mux.Handle("/filter", web.FilterHandler(db))
+	mux.Handle("/rss", rss.RssHandler(db))
 
 	fmt.Println("Listening on :4932")
 	log.Fatal(http.ListenAndServe(":4932", mux))
