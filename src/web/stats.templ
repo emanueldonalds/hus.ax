@@ -13,7 +13,9 @@ templ StatsContent(stats db.Stats) {
 	<div id="charts">
 		<canvas class="chart" id="n-listings-chart"></canvas>
 		<canvas class="chart" id="avg-price-m2-chart"></canvas>
+        <canvas class="chart" id="med-price-m2-chart"></canvas>
 		<canvas class="chart" id="avg-price-chart"></canvas>
+		<canvas class="chart" id="med-price-chart"></canvas>
 	</div>
 	<script>
         function createChart(series) {
@@ -49,7 +51,23 @@ templ StatsContent(stats db.Stats) {
                     datasets: [{
                         label: 'Genomsnittligt pris per m2',
                         data: series.AvgPriceM2,
-                        borderWidth: 1
+                        borderWidth: 1,
+                        borderColor: '#4eb03a',
+                        backgroundColor: '#40db6c'
+                    }]
+                },
+                options: euroOptions
+            }))
+            charts.push(new Chart(document.getElementById('med-price-m2-chart'), {
+                type: 'line',
+                data: {
+                    labels: series.Date,
+                    datasets: [{
+                        label: 'Medianpris per m2',
+                        data: series.MedPriceM2,
+                        borderWidth: 1,
+                        borderColor: '#4eb03a',
+                        backgroundColor: '#40db6c'
                     }]
                 },
                 options: euroOptions
@@ -61,7 +79,23 @@ templ StatsContent(stats db.Stats) {
                     datasets: [{
                         label: 'Genomsnittligt pris',
                         data: series.AvgPrice,
-                        borderWidth: 1
+                        borderWidth: 1,
+                        borderColor: '#7f69e0',
+                        backgroundColor: '#baabff'
+                    }]
+                },
+                options: euroOptions
+            }))
+            charts.push(new Chart(document.getElementById('med-price-chart'), {
+                type: 'line',
+                data: {
+                    labels: series.Date,
+                    datasets: [{
+                        label: 'Medianpris',
+                        data: series.MedPrice,
+                        borderWidth: 1,
+                        borderColor: '#7f69e0',
+                        backgroundColor: '#baabff'
                     }]
                 },
                 options: euroOptions

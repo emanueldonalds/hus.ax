@@ -45,6 +45,8 @@ type DailyStatistic struct {
 	Date       string
 	AvgPrice   int
 	AvgPriceM2 int
+	MedPrice   int
+	MedPriceM2 int
 	Nlistings  int
 }
 
@@ -52,5 +54,7 @@ type Stats struct {
 	Date       []string
 	AvgPrice   []int
 	AvgPriceM2 []int
+	MedPrice   []int
+	MedPriceM2 []int
 	Nlistings  []int
 }

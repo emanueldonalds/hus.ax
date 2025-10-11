@@ -234,7 +234,7 @@ func GetLastScrape(sqldb *sql.DB) ScrapeEvent {
 }
 
 func GetStatistics(sqldb *sql.DB) Stats {
-	query, err := sqldb.Query("SELECT date, avg_price, avg_pricem2, n_listings FROM daily_statistic ORDER BY date")
+	query, err := sqldb.Query("SELECT date, avg_price, avg_pricem2, med_price, med_pricem2, n_listings FROM daily_statistic ORDER BY date")
 
 	if err != nil {
 		panic(err.Error())
@@ -248,6 +248,8 @@ func GetStatistics(sqldb *sql.DB) Stats {
 			&rowStat.Date,
 			&rowStat.AvgPrice,
 			&rowStat.AvgPriceM2,
+			&rowStat.MedPrice,
+			&rowStat.MedPriceM2,
 			&rowStat.Nlistings,
 		)
 		if err != nil {
@@ -270,6 +272,8 @@ func GetStatistics(sqldb *sql.DB) Stats {
 			stats.Date = append(stats.Date, month)
 			stats.AvgPrice = append(stats.AvgPrice, dailyStat.AvgPrice)
 			stats.AvgPriceM2 = append(stats.AvgPriceM2, dailyStat.AvgPriceM2)
+			stats.MedPrice = append(stats.MedPrice, dailyStat.MedPrice)
+			stats.MedPriceM2 = append(stats.MedPriceM2, dailyStat.MedPriceM2)
 			stats.Nlistings = append(stats.Nlistings, dailyStat.Nlistings)
 		}
 	}
