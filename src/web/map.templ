@@ -34,8 +34,9 @@ templ MapContent(locations []db.GeoLocation) {
             locations
                 .filter(l => l.Lat != undefined && l.Lon != undefined && l.Lat.Valid && l.Lon.Valid)
                 .forEach(l => {
-                    console.log(l);
-                    new Marker([l.Lat.Float64, l.Lon.Float64]).addTo(map)
+                    const address = document.createElement('span');
+                    address.textContent = l.Address;
+                    new Marker([l.Lat.Float64, l.Lon.Float64]).bindTooltip(address).addTo(map)
                 });
         }
 
