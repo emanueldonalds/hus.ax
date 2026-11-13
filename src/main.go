@@ -33,6 +33,7 @@ func main() {
 
 	mux.Handle("/", web.IndexHandler(db))
 	mux.Handle("/info/{id}", web.DetailsHandler(db))
+	mux.Handle("/map", web.MapHandler(db))
 	mux.Handle("/stats", web.StatisticsHandler(db))
 	mux.Handle("/filter", web.FilterHandler(db))
 	mux.Handle("/rss", rss.RssHandler(db))

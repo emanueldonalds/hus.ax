@@ -1,0 +1,16 @@
+package web 
+
+import "github.com/emanueldonalds/husax/db"
+
+templ Map(locations []db.GeoLocation) {
+	@Layout(Back(), MapContent(locations))
+}
+
+templ MapContent(locations []db.GeoLocation) {
+	<p>The map!</p>
+    for _, location := range locations {
+        <p>hi!</p>
+        <p>{location.Address}</p>
+    }
+}
+

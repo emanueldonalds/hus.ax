@@ -213,7 +213,7 @@ func GetPriceChanges(listings []Listing, sqldb *sql.DB) []PriceChange {
 }
 
 func GetLastScrape(sqldb *sql.DB) ScrapeEvent {
-	query, qErr := sqldb.Query("SELECT date, added, updated, deleted, undeleted, total_active from scrape_event ORDER BY date DESC LIMIT 1")
+	query, qErr := sqldb.Query("SELECT date, added, updated, deleted, total_active from scrape_event ORDER BY date DESC LIMIT 1")
 
 	if qErr != nil {
 		panic(qErr.Error())
@@ -222,7 +222,7 @@ func GetLastScrape(sqldb *sql.DB) ScrapeEvent {
 	query.Next()
 
 	var scrapeEvent ScrapeEvent
-	sErr := query.Scan(&scrapeEvent.Date, &scrapeEvent.Added, &scrapeEvent.Updated, &scrapeEvent.Deleted, &scrapeEvent.Undeleted, &scrapeEvent.TotalActive)
+	sErr := query.Scan(&scrapeEvent.Date, &scrapeEvent.Added, &scrapeEvent.Updated, &scrapeEvent.Deleted, &scrapeEvent.TotalActive)
 
 	query.Close()
 
@@ -231,6 +231,29 @@ func GetLastScrape(sqldb *sql.DB) ScrapeEvent {
 	}
 
 	return scrapeEvent
+}
+
+func GetGeoLocations(sqldb *sql.DB) []GeoLocation {
+	query, err := sqldb.Query("SELECT l.address, gl.lat, gl.lon from listing l left join geo_location gl on l.id = gl.listing_id where l.deleted = false")
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	locations := []GeoLocation{}
+
+	for query.Next() {
+		var location GeoLocation
+		err := query.Scan(&location.Address, &location.Lat, &location.Lon);
+
+		if err != nil {
+			panic(err.Error())
+		}
+		locations = append(locations, location)
+	}
+	query.Close();
+
+	return locations;
 }
 
 func GetStatistics(sqldb *sql.DB) Stats {

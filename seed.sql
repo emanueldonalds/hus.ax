@@ -126,7 +126,6 @@ CREATE TABLE `scrape_event` (
   `deleted` bigint(20) NOT NULL,
   `updated` bigint(20) NOT NULL,
   `total_active` bigint(20) NOT NULL,
-  `undeleted` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11100 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

@@ -20,6 +20,8 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string,
 			&emsp;
 			Uppdaterad: { formatters.FormatDateTime(lastScrape.Date) }
 			&emsp;
+            <a href="/map">Karta</a>
+			&emsp;
             <a href="/stats">Statistik</a>
 			&emsp;
             <a href="/rss">RSS-flöde</a>

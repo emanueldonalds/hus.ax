@@ -59,6 +59,13 @@ func DetailsHandler(sqldb *sql.DB) http.Handler {
 	})
 }
 
+func MapHandler(sqldb *sql.DB) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		locations := db.GetGeoLocations(sqldb)
+		Map(locations).Render(r.Context(), w)
+	})
+}
+
 func StatisticsHandler(sqldb *sql.DB) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		stats := db.GetStatistics(sqldb)

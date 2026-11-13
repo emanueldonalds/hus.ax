@@ -1,5 +1,7 @@
 package db
 
+import "database/sql"
+
 type Listing struct {
 	Id            string
 	Agency        string
@@ -37,7 +39,6 @@ type ScrapeEvent struct {
 	Added       int
 	Updated     int
 	Deleted     int
-	Undeleted   int
 	TotalActive int
 }
 
@@ -57,4 +58,10 @@ type Stats struct {
 	MedPrice   []int
 	MedPriceM2 []int
 	Nlistings  []int
+}
+
+type GeoLocation struct {
+	Address string
+	Lat     sql.NullFloat64
+	Lon     sql.NullFloat64
 }
