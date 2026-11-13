@@ -1,6 +1,7 @@
 package web
 
 templ Layout(sidebarContents templ.Component, mainContents templ.Component) {
+    <!DOCTYPE html>
 	<html lang="sv">
 		<head>
 			<meta charset="utf-8"/>
@@ -22,9 +23,13 @@ templ Layout(sidebarContents templ.Component, mainContents templ.Component) {
 			<link rel="apple-touch-icon" type="image/png" sizes="57x57" href="/assets/icon-57x57.png"/>
 			<link rel="apple-touch-icon" type="image/png" sizes="114x114" href="/assets/icon-114x114.png"/>
 			<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="/assets/icon-180x180.png"/>
+            <link href="/assets/style.css" rel="stylesheet"/>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@2.0.0-beta.4/dist/leaflet.css">
 			<script src="/assets/htmx.min.js"></script>
 			<script defer data-domain="hus.ax" src="https://analytics.edonalds.com/js/script.outbound-links.js"></script>
-			<link href="/assets/style.css" rel="stylesheet"/>
+            <script type="importmap">
+                {"imports": {"leaflet": "https://cdn.jsdelivr.net/npm/leaflet@2.0.0-beta.4/dist/leaflet.js"}}
+            </script>
 		</head>
 		<body>
 			@Sidebar(sidebarContents)

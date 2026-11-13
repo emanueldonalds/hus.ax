@@ -1,16 +1,46 @@
 package web 
 
-import "github.com/emanueldonalds/husax/db"
+import (
+    "github.com/emanueldonalds/husax/db"
+)
 
 templ Map(locations []db.GeoLocation) {
 	@Layout(Back(), MapContent(locations))
 }
 
 templ MapContent(locations []db.GeoLocation) {
-	<p>The map!</p>
-    for _, location := range locations {
-        <p>hi!</p>
-        <p>{location.Address}</p>
-    }
-}
 
+	<div id="map-container" data-locations={templ.JSONString(locations)}>
+		<div id="map" style=""></div>
+	</div>
+
+    <script type="module">
+        import {LeafletMap, TileLayer, Marker} from 'leaflet';
+
+        function initializeMap() {
+            const map = new LeafletMap('map').setView([60.2, 20.2], 10);
+
+            new TileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            return map;
+        }
+
+        function addMarkers(map) {
+            const locations = JSON.parse(document.getElementById('map-container').dataset.locations);
+
+            locations
+                .filter(l => l.Lat != undefined && l.Lon != undefined && l.Lat.Valid && l.Lon.Valid)
+                .forEach(l => {
+                    console.log(l);
+                    new Marker([l.Lat.Float64, l.Lon.Float64]).addTo(map)
+                });
+        }
+
+        const map = initializeMap();
+        addMarkers(map);
+
+    </script>
+}

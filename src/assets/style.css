@@ -339,3 +339,14 @@ img {
 .chart {
     max-height: 20rem;
 }
+
+/* Map */
+#map-container {
+    flex: 1; 
+    margin-left: 2rem;
+}
+
+#map {
+    height: 100dvh;
+    width: 100%;
+}
