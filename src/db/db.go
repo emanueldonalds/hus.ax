@@ -234,7 +234,7 @@ func GetLastScrape(sqldb *sql.DB) ScrapeEvent {
 }
 
 func GetGeoLocations(sqldb *sql.DB) []GeoLocation {
-	query, err := sqldb.Query("SELECT l.url, l.address, gl.lat, gl.lon from listing l left join geo_location gl on l.id = gl.listing_id where l.deleted = false")
+	query, err := sqldb.Query("SELECT l.url, IFNULL(l.address, \"\"), gl.lat, gl.lon from listing l left join geo_location gl on l.id = gl.listing_id where l.deleted = false")
 
 	if err != nil {
 		panic(err.Error())
