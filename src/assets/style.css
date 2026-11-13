@@ -567,7 +567,8 @@ img {
         flex-wrap: wrap;
         align-items: flex-end;
         gap: 0.35rem 1.5rem;
-        padding: 0.75rem;
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
         background: #fff;
     }
 
