@@ -5,21 +5,36 @@ import "github.com/emanueldonalds/husax/db"
 templ Stats(stats db.Stats) {
 	<script src="/assets/chart.js"></script>
 	@Layout(Back(), StatsContent(stats))
-
 	@templ.JSFuncCall("createChart", stats)
 }
 
 templ StatsContent(stats db.Stats) {
-	<div id="charts">
-		<canvas class="chart" id="n-listings-chart"></canvas>
-		<canvas class="chart" id="avg-price-m2-chart"></canvas>
-        <canvas class="chart" id="med-price-m2-chart"></canvas>
-		<canvas class="chart" id="avg-price-chart"></canvas>
-		<canvas class="chart" id="med-price-chart"></canvas>
+	<div id="chart-tabs">
+		<button type="button" class="active" data-group="count" onclick="showChartGroup(this.dataset.group)">Antal</button>
+		<button type="button" data-group="m2" onclick="showChartGroup(this.dataset.group)">Pris/m2</button>
+		<button type="button" data-group="price" onclick="showChartGroup(this.dataset.group)">Pris</button>
+	</div>
+	<div id="charts" data-active="count">
+		<div class="chart-box" data-group="count"><canvas id="n-listings-chart"></canvas></div>
+		<div class="chart-box" data-group="m2"><canvas id="avg-price-m2-chart"></canvas></div>
+		<div class="chart-box" data-group="m2"><canvas id="med-price-m2-chart"></canvas></div>
+		<div class="chart-box" data-group="price"><canvas id="avg-price-chart"></canvas></div>
+		<div class="chart-box" data-group="price"><canvas id="med-price-chart"></canvas></div>
 	</div>
 	<script>
+        function showChartGroup(group) {
+            document.getElementById('charts').dataset.active = group;
+            document.querySelectorAll('#chart-tabs button').forEach(b => {
+                b.classList.toggle('active', b.dataset.group === group);
+            });
+        }
+
         function createChart(series) {
+            // Fixed-height boxes instead of aspect ratio so charts stay readable on narrow screens
+            var baseOptions = { maintainAspectRatio: false }
+
             var euroOptions = {
+                ...baseOptions,
                 scales: {
                     y: {
                         ticks: {
@@ -42,7 +57,8 @@ templ StatsContent(stats db.Stats) {
                         data: series.Nlistings,
                         borderWidth: 1
                     }]
-                }
+                },
+                options: baseOptions
             }))
             charts.push(new Chart(document.getElementById('avg-price-m2-chart'), {
                 type: 'line',

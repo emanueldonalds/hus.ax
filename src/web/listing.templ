@@ -70,22 +70,24 @@ templ priceHistoryTable(listing db.Listing) {
 	if (len(listing.PriceHistory) > 0) {
 		<div>
 			<h3>Prishistorik</h3>
-			<table>
-				<thead>
-					<tr>
-						<th>Datum</th>
-						<th>Pris</th>
-						<th></th>
-					</tr>
-				</thead>
-				for _, priceChange := range listing.PriceHistory {
-					<tr>
-						<td class="right-align">{ formatters.FormatFullDate(priceChange.EffectiveFrom) } </td>
-						<td class="right-align">{ formatters.FormatPrice(priceChange.Price) }</td>
-						<td></td>
-					</tr>
-				}
-			</table>
+			<div class="table-scroll">
+				<table>
+					<thead>
+						<tr>
+							<th>Datum</th>
+							<th>Pris</th>
+							<th></th>
+						</tr>
+					</thead>
+					for _, priceChange := range listing.PriceHistory {
+						<tr>
+							<td class="right-align">{ formatters.FormatFullDate(priceChange.EffectiveFrom) } </td>
+							<td class="right-align">{ formatters.FormatPrice(priceChange.Price) }</td>
+							<td></td>
+						</tr>
+					}
+				</table>
+			</div>
 		</div>
 	}
 }
@@ -94,28 +96,30 @@ templ listingHistoryTable(listing db.Listing, listingHistory []db.Listing) {
 	if (len(listingHistory) > 1) {
 		<div>
 			<h3>Annonser med samma address</h3>
-			<table>
-				<thead>
-					<tr>
-						<th>Synlig</th>
-						<th>Datum</th>
-						<th>Pris</th>
-						<th>Länk</th>
-						<th></th>
-					</tr>
-				</thead>
-				for _, historicListing := range listingHistory {
-					if (listing.Id != historicListing.Id) {
+			<div class="table-scroll">
+				<table>
+					<thead>
 						<tr>
-							<td>{ formatters.FormatBool(!historicListing.Deleted) } </td>
-							<td class="right-align">{ formatters.FormatFullDate(historicListing.FirstSeen) } </td>
-							<td class="right-align">{ formatters.FormatPrice(historicListing.Price) } </td>
-							<td><a href={ templ.URL(historicListing.Url) }>{ historicListing.Url }</a> </td>
-							<td><a href={ templ.URL(historicListing.InfoUrl) }>Info</a> </td>
+							<th>Synlig</th>
+							<th>Datum</th>
+							<th>Pris</th>
+							<th>Länk</th>
+							<th></th>
 						</tr>
+					</thead>
+					for _, historicListing := range listingHistory {
+						if (listing.Id != historicListing.Id) {
+							<tr>
+								<td>{ formatters.FormatBool(!historicListing.Deleted) } </td>
+								<td class="right-align">{ formatters.FormatFullDate(historicListing.FirstSeen) } </td>
+								<td class="right-align">{ formatters.FormatPrice(historicListing.Price) } </td>
+								<td class="url"><a href={ templ.URL(historicListing.Url) }>{ historicListing.Url }</a> </td>
+								<td><a href={ templ.URL(historicListing.InfoUrl) }>Info</a> </td>
+							</tr>
+						}
 					}
-				}
-			</table>
+				</table>
+			</div>
 		</div>
 	}
 }

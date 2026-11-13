@@ -4,6 +4,7 @@ import (
 	"github.com/emanueldonalds/husax/db"
 	"github.com/emanueldonalds/husax/formatters"
 	"strconv"
+	"strings"
 )
 
 func getRowClass(deleted bool) string {
@@ -13,22 +14,22 @@ func getRowClass(deleted bool) string {
 	return ""
 }
 
+func formatSize(size db.Size) string {
+	return strings.TrimSpace(formatters.FormatInt(size.Value) + " " + size.Unit)
+}
+
 templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string, sortOrder string) {
 	<div id="listings">
 		<div id="metadata">
-			Rader: { strconv.Itoa(len(listings)) }
-			&emsp;
-			Uppdaterad: { formatters.FormatDateTime(lastScrape.Date) }
-			&emsp;
-            <a href="/map">Karta</a>
-			&emsp;
-            <a href="/stats">Statistik</a>
-			&emsp;
-            <a href="/rss">RSS-flöde</a>
-			&emsp;
-            <a href="https://github.com/emanueldonalds/hus.ax">Källkod</a>
-			&emsp;
-			<a href="email:info@edsoftware.ax">info@edsoftware.ax</a>
+			<span>Rader: { strconv.Itoa(len(listings)) }</span>
+			<span>Uppdaterad: { formatters.FormatDateTime(lastScrape.Date) }</span>
+			<nav id="links">
+				<a href="/map">Karta</a>
+				<a href="/stats">Statistik</a>
+				<a href="/rss">RSS-flöde</a>
+				<a href="https://github.com/emanueldonalds/hus.ax">Källkod</a>
+				<a href="email:info@edsoftware.ax">info@edsoftware.ax</a>
+			</nav>
 		</div>
 		<table id="listings-table">
 			<thead>
@@ -49,19 +50,19 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string,
 			<tbody>
 				for _, x := range listings {
 					<tr class={ getRowClass(x.Deleted) }>
-						<td class="address" title={ x.Name }>
+						<td class="address" data-col="address" title={ x.Name }>
 							<a href={ templ.URL(x.Url) }>{ x.Address }</a>
 						</td>
-						<td class="right-align">{ formatters.FormatPrice(x.Price) }</td>
-						<td class="right-align">{ formatters.FormatInt(x.Size.Value) } { x.Size.Unit }</td>
-						<td class="right-align">{ formatters.FormatPrice(x.PriceOverArea) } </td>
-						<td class="right-align">{ formatters.FormatInt(x.Rooms) }</td>
-						<td class="right-align">{ formatters.FormatInt(x.Year) }</td>
-						<td class="right-align">{ formatters.FormatPrevPrice(x.PriceHistory) }</td>
-						<td class="right-align">{ formatters.FormatDate(x.FirstSeen) }</td>
-						<td class="agency">{ x.Agency }</td>
-						<td class="right-align google_maps"><a href={ templ.URL(x.GoogleMapsUrl) }>Google Maps</a></td>
-						<td class="info"><a href={ templ.URL("info/" + x.Id) }>Info</a></td>
+						<td class="right-align" data-col="price">{ formatters.FormatPrice(x.Price) }</td>
+						<td class="right-align" data-col="size" data-label="Area">{ formatSize(x.Size) }</td>
+						<td class="right-align" data-col="price_over_area" data-label="Pris/m2">{ formatters.FormatPrice(x.PriceOverArea) }</td>
+						<td class="right-align" data-col="rooms" data-label="Rum">{ formatters.FormatInt(x.Rooms) }</td>
+						<td class="right-align" data-col="build_year" data-label="Årtal">{ formatters.FormatInt(x.Year) }</td>
+						<td class="right-align" data-col="last_price" data-label="Tidigare pris">{ formatters.FormatPrevPrice(x.PriceHistory) }</td>
+						<td class="right-align" data-col="first_seen" data-label="Upptäckt">{ formatters.FormatDate(x.FirstSeen) }</td>
+						<td class="agency" data-col="agency" data-label="Mäklare">{ x.Agency }</td>
+						<td class="right-align google_maps" data-col="google_maps"><a href={ templ.URL(x.GoogleMapsUrl) }>Google Maps</a></td>
+						<td class="info" data-col="info"><a href={ templ.URL("info/" + x.Id) }>Info</a></td>
 					</tr>
 				}
 			</tbody>

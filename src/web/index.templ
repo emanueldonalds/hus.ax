@@ -7,12 +7,40 @@ templ Index(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string, so
 	<script src="/assets/index.js"></script>
 }
 
+type sortOption struct {
+	Value string
+	Label string
+}
+
+var sortOptions = []sortOption{
+	{"", "Senast upptäckt"},
+	{"first_seen:asc", "Upptäckt (äldst först)"},
+	{"price:asc", "Pris (lägst först)"},
+	{"price:desc", "Pris (högst först)"},
+	{"price_over_area:asc", "Pris/m2 (lägst först)"},
+	{"price_over_area:desc", "Pris/m2 (högst först)"},
+	{"size_value:desc", "Area (störst först)"},
+	{"size_value:asc", "Area (minst först)"},
+	{"rooms:desc", "Rum (flest först)"},
+	{"rooms:asc", "Rum (färrest först)"},
+	{"build_year:desc", "Årtal (nyast först)"},
+	{"build_year:asc", "Årtal (äldst först)"},
+	{"address:asc", "Adress (A-Ö)"},
+	{"address:desc", "Adress (Ö-A)"},
+	{"agency:asc", "Mäklare (A-Ö)"},
+	{"agency:desc", "Mäklare (Ö-A)"},
+}
+
 templ filters() {
+	<button type="button" id="filters-toggle" aria-controls="filters" aria-expanded="false">
+		Filter <span id="filters-count"></span>
+	</button>
 	<form id="filters" hx-get="/filter" hx-target="#listings" hx-trigger="change, submit">
 		<div class="input-group">
 			<label>Sök</label>
 			<input class="input-field" placeholder="Fritext" id="search" name="search"/>
 		</div>
+		@inputSort()
 		@inputRange("price_min", "price_max", "Pris")
 		@inputRange("build_year_min", "build_year_max", "År")
 		@inputRange("size_value_min", "size_value_max", "Area")
@@ -23,6 +51,17 @@ templ filters() {
 		<input type="hidden" id="sort_order" name="sort_order"/>
 		<button id="send" type="submit">Filtrera</button>
 	</form>
+}
+
+templ inputSort() {
+	<div class="input-group sort-group">
+		<label for="sort-select">Sortera</label>
+		<select id="sort-select">
+			for _, o := range sortOptions {
+				<option value={ o.Value }>{ o.Label }</option>
+			}
+		</select>
+	</div>
 }
 
 templ inputRange(minId string, maxId string, title string) {

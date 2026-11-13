@@ -61,6 +61,7 @@ type Stats struct {
 }
 
 type GeoLocation struct {
+	Id      string
 	Address string
 	Lat     sql.NullFloat64
 	Lon     sql.NullFloat64

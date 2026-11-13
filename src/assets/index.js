@@ -1,10 +1,13 @@
 populateInputFields();
 registerUrlUpdater();
+registerFilterPanel();
+registerSortSelect();
 
 function populateInputFields() {
     const query = window.location.search;
     const params = new URLSearchParams(query);
 
+    const searchName = "search";
     const agencyName = "agency";
     const priceMinName = "price_min";
     const priceMaxName = "price_max";
@@ -18,6 +21,7 @@ function populateInputFields() {
     const orderByName = "order_by";
     const sortOrderName = "sort_order";
 
+    document.getElementById(searchName).value = params.get(searchName) ?? '';
     document.getElementById(agencyName).value = params.get(agencyName) ?? '';
     document.getElementById(priceMinName).value = params.get(priceMinName);
     document.getElementById(priceMaxName).value = params.get(priceMaxName);
@@ -30,6 +34,52 @@ function populateInputFields() {
     document.getElementById(includeDeletedName).checked = params.get(includeDeletedName) === "true";
     document.getElementById(orderByName).value = params.get(orderByName);
     document.getElementById(sortOrderName).value = params.get(sortOrderName);
+}
+
+// Mobile only: the filter form is collapsed behind a toggle button, see style.css
+function registerFilterPanel() {
+    const form = document.getElementById('filters');
+    const toggle = document.getElementById('filters-toggle');
+
+    const setOpen = open => {
+        form.classList.toggle('open', open);
+        toggle.setAttribute('aria-expanded', String(open));
+    };
+
+    toggle.addEventListener('click', () => setOpen(!form.classList.contains('open')));
+    form.addEventListener('submit', () => setOpen(false));
+    form.addEventListener('change', updateActiveFilterCount);
+    updateActiveFilterCount();
+}
+
+function updateActiveFilterCount() {
+    const ignored = ['order_by', 'sort_order'];
+    const active = Array.from(document.getElementById('filters').elements).filter(el => {
+        if (!el.name || ignored.includes(el.name)) return false;
+        return el.type === 'checkbox' ? el.checked : el.value !== '';
+    });
+
+    document.getElementById('filters-count').textContent = active.length > 0 ? `(${active.length})` : '';
+}
+
+// The sort select replaces the clickable table headers, which are hidden on mobile
+function registerSortSelect() {
+    const select = document.getElementById('sort-select');
+
+    // Updates the hidden inputs before the form's own change handler (htmx) sees the event
+    select.addEventListener('change', () => {
+        const [field, order] = select.value.split(':');
+        document.getElementById('order_by').value = field ?? '';
+        document.getElementById('sort_order').value = order ?? '';
+    });
+
+    syncSortSelect();
+}
+
+function syncSortSelect() {
+    const field = document.getElementById('order_by').value;
+    const order = document.getElementById('sort_order').value;
+    document.getElementById('sort-select').value = field ? `${field}:${order}` : '';
 }
 
 function registerUrlUpdater() {
@@ -75,5 +125,6 @@ function sort(field) {
     }
 
 
+    syncSortSelect();
     document.getElementById("send").click();
 }

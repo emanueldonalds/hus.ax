@@ -89,9 +89,12 @@ button {
     display: inline-block;
 }
 
-button:hover {
-    background-color: #c1c1c1;
-    cursor: pointer;
+/* Hover styles only on devices that can hover, otherwise they stick after a tap */
+@media (hover: hover) {
+    button:hover {
+        background-color: #c1c1c1;
+        cursor: pointer;
+    }
 }
 
 table {
@@ -201,11 +204,23 @@ img {
     flex-direction: column;
 }
 
+#filters-toggle,
+.sort-group {
+    display: none;
+}
+
 /* Listings */
 
 #metadata {
     margin-top: 0.5rem;
     margin-bottom: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1.5rem;
+}
+
+#links {
+    display: contents;
 }
 
 #listings {
@@ -301,12 +316,18 @@ img {
     text-decoration: none;
 }
 
-.button:hover {
-    color: gray;
-    cursor: pointer;
+@media (hover: hover) {
+    .button:hover {
+        color: gray;
+        cursor: pointer;
+    }
 }
 
 /* Listing info */
+
+.table-scroll {
+    overflow-x: auto;
+}
 
 #listing-info {
     padding-left: 2rem;
@@ -336,8 +357,13 @@ img {
     margin-left: 2rem;
 }
 
-.chart {
-    max-height: 20rem;
+#chart-tabs {
+    display: none;
+}
+
+.chart-box {
+    position: relative;
+    height: 20rem;
 }
 
 /* Map */
@@ -349,4 +375,326 @@ img {
 #map {
     height: 100dvh;
     width: 100%;
+}
+
+/* Mobile */
+
+@media (max-width: 1024px) {
+    body {
+        flex-direction: column;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+
+    /* 16px font size stops iOS Safari from zooming in on focused inputs */
+    input,
+    select {
+        height: 2.75rem;
+        font-size: 1rem;
+    }
+
+    input[type=checkbox] {
+        height: 1.5rem;
+        width: 1.5rem;
+    }
+
+    button {
+        min-height: 2.75rem;
+        padding: 0 1rem;
+    }
+
+    .button {
+        padding: 0.5rem 0;
+    }
+
+    /* Header */
+
+    #sidebar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+        padding: 0.5rem 0;
+        background: #fff;
+        border-bottom: 1px solid #efefef;
+    }
+
+    #heading {
+        margin-bottom: 0;
+    }
+
+    #heading small {
+        display: none;
+    }
+
+    #logo-container {
+        margin-bottom: 0;
+    }
+
+    #logo-container img {
+        max-width: 2.5rem;
+    }
+
+    /* Filters */
+
+    #filters-toggle {
+        display: inline-block;
+    }
+
+    #filters {
+        display: none;
+        flex: 0 0 100%;
+        width: 100%;
+        margin: 0;
+        padding-top: 0.5rem;
+        max-height: calc(100dvh - 5rem);
+        overflow-y: auto;
+    }
+
+    #filters.open {
+        display: flex;
+    }
+
+    .sort-group {
+        display: flex;
+    }
+
+    /* Same label column and a full-width control column in every row, regardless of screen width */
+    .input-group label {
+        min-width: 6rem;
+    }
+
+    .input-group > .input-field,
+    .input-group > select,
+    .input-range-fields {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .input-range-fields .input-field {
+        min-width: 0;
+    }
+
+    /* Matches the side margin of .input-field so selects line up with the inputs */
+    .input-group > select {
+        margin: 0 0.1rem;
+    }
+
+    #send {
+        width: 100%;
+    }
+
+    /* Listings */
+
+    #listings {
+        white-space: normal;
+    }
+
+    #metadata {
+        font-size: 0.85rem;
+        gap: 0.15rem 1rem;
+    }
+
+    #links {
+        display: flex;
+        flex: 0 0 100%;
+        flex-wrap: wrap;
+        gap: 0 1rem;
+    }
+
+    #links a {
+        padding: 0.4rem 0;
+    }
+
+    /* Each table row becomes a card. The #listings prefix is needed to beat the desktop column width rules */
+    #listings #listings-table,
+    #listings #listings-table tbody {
+        display: block;
+        width: 100%;
+        border-top: none;
+        padding-top: 0;
+    }
+
+    #listings #listings-table thead {
+        display: none;
+    }
+
+    #listings #listings-table tr {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        gap: 0.35rem 1.5rem;
+        padding: 0.75rem;
+        background: #fff;
+    }
+
+    #listings #listings-table tr + tr {
+        border-top: 1px solid #e3e3e3;
+    }
+
+    #listings #listings-table td {
+        display: block;
+        min-width: 0;
+        max-width: none;
+        padding: 0;
+        font-size: 0.9rem;
+        white-space: normal;
+        overflow-wrap: anywhere;
+        text-align: left !important;
+        flex: 0 1 auto;
+        order: 3;
+    }
+
+    #listings #listings-table td:empty {
+        display: none;
+    }
+
+    #listings #listings-table td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        font-size: 0.7rem;
+        color: #777;
+    }
+
+    /* Full-width items force a line break, order keeps them above the details */
+    #listings #listings-table td[data-col=address],
+    #listings #listings-table td[data-col=price],
+    #listings #listings-table td[data-col=last_price] {
+        flex: 0 0 100%;
+    }
+
+    #listings #listings-table td[data-col=address] {
+        order: 0;
+        font-size: 1.05rem;
+        font-weight: bold;
+    }
+
+    #listings #listings-table td[data-col=price] {
+        order: 1;
+        font-size: 1.25rem;
+        font-weight: bold;
+    }
+
+    #listings #listings-table td[data-col=last_price] {
+        order: 2;
+    }
+
+    #listings #listings-table td[data-col=last_price]::before {
+        display: inline;
+        margin-right: 0.4rem;
+    }
+
+    #listings #listings-table td[data-col=google_maps] {
+        display: none;
+    }
+
+    /* Auto margin pushes the link to the right end of the last line, wherever the details wrap */
+    #listings #listings-table td[data-col=info] {
+        order: 4;
+        margin-left: auto;
+    }
+
+    /* Listing info */
+
+    #listing-info {
+        padding-left: 0;
+    }
+
+    #listing-info-table,
+    #listing-info-table tbody,
+    #listing-info-table tr,
+    #listing-info-table th,
+    #listing-info-table td {
+        display: block;
+    }
+
+    #listing-info-table tr {
+        padding: 0.4rem 0;
+    }
+
+    #listing-info-table th {
+        padding: 0;
+        font-size: 0.75rem;
+        font-weight: normal;
+        color: #777;
+        text-align: left;
+    }
+
+    #listing-info-table td {
+        padding: 0;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    .table-scroll td.url {
+        min-width: 12rem;
+        white-space: normal;
+        overflow-wrap: anywhere;
+    }
+
+    /* Charts */
+
+    #chart-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin: 0.75rem 0;
+    }
+
+    #chart-tabs button {
+        flex: 1;
+    }
+
+    #chart-tabs button.active {
+        background-color: #4a6fa7;
+        border-color: #4a6fa7;
+        color: white;
+    }
+
+    #charts {
+        min-width: 0;
+        margin-left: 0;
+        gap: 1.5rem;
+    }
+
+    .chart-box {
+        display: none;
+        height: 16rem;
+    }
+
+    #charts[data-active=count] .chart-box[data-group=count],
+    #charts[data-active=m2] .chart-box[data-group=m2],
+    #charts[data-active=price] .chart-box[data-group=price] {
+        display: block;
+    }
+
+    /* Map: full screen with a floating back button */
+
+    body:has(#map-container) {
+        margin: 0;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    body:has(#map-container) #heading {
+        display: none;
+    }
+
+    body:has(#map-container) #sidebar {
+        position: fixed;
+        top: 0.5rem;
+        right: 0.5rem;
+        z-index: 1100;
+        padding: 0 0.75rem;
+        border: none;
+        border-radius: 0.4rem;
+        box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
+    }
+
+    #map-container {
+        margin-left: 0;
+    }
 }
