@@ -71,7 +71,7 @@ templ priceHistoryTable(listing db.Listing) {
 		<div>
 			<h3>Prishistorik</h3>
 			<div class="table-scroll">
-				<table>
+				<table id="price-history-table">
 					<thead>
 						<tr>
 							<th>Datum</th>
@@ -81,8 +81,8 @@ templ priceHistoryTable(listing db.Listing) {
 					</thead>
 					for _, priceChange := range listing.PriceHistory {
 						<tr>
-							<td class="right-align">{ formatters.FormatFullDate(priceChange.EffectiveFrom) } </td>
-							<td class="right-align">{ formatters.FormatPrice(priceChange.Price) }</td>
+							<td>{ formatters.FormatFullDate(priceChange.EffectiveFrom) } </td>
+							<td>{ formatters.FormatPrice(priceChange.Price) }</td>
 							<td></td>
 						</tr>
 					}

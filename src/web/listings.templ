@@ -71,8 +71,8 @@ templ Listings(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string,
 }
 
 templ SortableHdr(class string, name string, label string, orderBy string, sortOrder string) {
-	<th class={ "sortable " + class }>
-		<a onclick={ templ.JSFuncCall("sort", name) }>
+	<th class={ "sortable " + class } onclick={ templ.JSFuncCall("sort", name) }>
+		<a>
 			{ label }
 			if orderBy == name {
 				if sortOrder == "asc" {

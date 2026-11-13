@@ -244,6 +244,13 @@ img {
 #listings th {
     text-align: left;
     white-space: wrap;
+    font-weight: normal;
+    color: #444;
+}
+
+#listings th.sortable:hover a {
+    color: black;
+    text-decoration: underline;
 }
 
 #listings th:last-child {
@@ -342,8 +349,40 @@ img {
     width: 100%;
 }
 
+#listing-info-table,
+#price-history-table {
+    border-top: none;
+    border-collapse: collapse;
+    padding-top: 0;
+}
+
+#listing-info-table tr,
+#price-history-table tr {
+    background: none;
+    border-bottom: 1px solid #EFEFEF;
+}
+
+#listing-info-table th,
+#listing-info-table td,
+#price-history-table th,
+#price-history-table td {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+#listing-info-table th,
+#price-history-table th {
+    text-align: left;
+    font-weight: normal;
+    color: #444;
+}
+
 #listing-info-table th {
-    text-align: right;
+    min-width: 9rem;
+}
+
+#price-history-table td:last-child {
+    width: 100%;
 }
 
 /* Charts */
@@ -557,7 +596,7 @@ img {
         content: attr(data-label);
         display: block;
         font-size: 0.7rem;
-        color: #777;
+        color: #444;
     }
 
     /* Full-width items force a line break, order keeps them above the details */
@@ -620,7 +659,6 @@ img {
         padding: 0;
         font-size: 0.75rem;
         font-weight: normal;
-        color: #777;
         text-align: left;
     }
 
@@ -628,6 +666,11 @@ img {
         padding: 0;
         white-space: normal;
         overflow-wrap: anywhere;
+    }
+
+    /* Zero-width space keeps empty values at one line of height, since empty blocks collapse to nothing */
+    #listing-info-table td::before {
+        content: "\200b";
     }
 
     .table-scroll td.url {
