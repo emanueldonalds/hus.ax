@@ -97,7 +97,7 @@ templ listingHistoryTable(listing db.Listing, listingHistory []db.Listing) {
 		<div>
 			<h3>Annonser med samma address</h3>
 			<div class="table-scroll">
-				<table>
+				<table id="listing-history-table">
 					<thead>
 						<tr>
 							<th>Synlig</th>
@@ -111,8 +111,8 @@ templ listingHistoryTable(listing db.Listing, listingHistory []db.Listing) {
 						if (listing.Id != historicListing.Id) {
 							<tr>
 								<td>{ formatters.FormatBool(!historicListing.Deleted) } </td>
-								<td class="right-align">{ formatters.FormatFullDate(historicListing.FirstSeen) } </td>
-								<td class="right-align">{ formatters.FormatPrice(historicListing.Price) } </td>
+								<td>{ formatters.FormatFullDate(historicListing.FirstSeen) } </td>
+								<td>{ formatters.FormatPrice(historicListing.Price) } </td>
 								<td class="url"><a href={ templ.URL(historicListing.Url) }>{ historicListing.Url }</a> </td>
 								<td><a href={ templ.URL(historicListing.InfoUrl) }>Info</a> </td>
 							</tr>

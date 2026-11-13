@@ -350,14 +350,16 @@ img {
 }
 
 #listing-info-table,
-#price-history-table {
+#price-history-table,
+#listing-history-table {
     border-top: none;
     border-collapse: collapse;
     padding-top: 0;
 }
 
 #listing-info-table tr,
-#price-history-table tr {
+#price-history-table tr,
+#listing-history-table tr {
     background: none;
     border-bottom: 1px solid #EFEFEF;
 }
@@ -365,13 +367,16 @@ img {
 #listing-info-table th,
 #listing-info-table td,
 #price-history-table th,
-#price-history-table td {
+#price-history-table td,
+#listing-history-table th,
+#listing-history-table td {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 }
 
 #listing-info-table th,
-#price-history-table th {
+#price-history-table th,
+#listing-history-table th {
     text-align: left;
     font-weight: normal;
     color: #444;
