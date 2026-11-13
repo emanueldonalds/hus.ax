@@ -6,7 +6,7 @@ import (
 )
 
 templ Listing(listing db.Listing, listingHistory []db.Listing) {
-	@Layout(Back(), listingInfo(listing, listingHistory))
+	@Layout(templ.NopComponent, Back(), listingInfo(listing, listingHistory))
 }
 
 templ listingInfo(listing db.Listing, listingHistory []db.Listing) {

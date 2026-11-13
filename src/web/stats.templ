@@ -4,7 +4,7 @@ import "github.com/emanueldonalds/husax/db"
 
 templ Stats(stats db.Stats) {
 	<script src="/assets/chart.js"></script>
-	@Layout(Back(), StatsContent(stats))
+	@Layout(templ.NopComponent, Back(), StatsContent(stats))
 	@templ.JSFuncCall("createChart", stats)
 }
 

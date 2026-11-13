@@ -3,7 +3,7 @@ package web
 import "github.com/emanueldonalds/husax/db"
 
 templ Index(listings []db.Listing, lastScrape db.ScrapeEvent, orderBy string, sortOrder string) {
-	@Layout(filters(), Listings(listings, lastScrape, orderBy, sortOrder))
+	@Layout(templ.NopComponent, filters(), Listings(listings, lastScrape, orderBy, sortOrder))
 	<script src="/assets/index.js"></script>
 }
 
