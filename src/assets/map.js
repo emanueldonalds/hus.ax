@@ -25,7 +25,7 @@ function addMarkers(map) {
             const marker = new Marker([l.Lat.Float64, l.Lon.Float64]);
 
             const link = document.createElement('a');
-            link.href = '/info/' + encodeURIComponent(l.Id);
+            link.href = encodeURI(l.Url);
             link.textContent = l.Address;
             marker.bindPopup(link);
 
